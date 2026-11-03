@@ -25,10 +25,6 @@ export default function AdminLoginPage() {
     }
   }, [adminData, isAdmin, navigate]);
 
-  const isLocalDev =
-    typeof window !== 'undefined' &&
-    (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -89,7 +85,7 @@ export default function AdminLoginPage() {
                 autoComplete="username"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@moccoffee.vn"
+                placeholder="Nhập email quản trị"
                 className="w-full px-3.5 py-2.5 rounded border border-[#E6DED3] bg-[#F7F2EA]/50 text-sm focus:outline-none focus:border-[#A65F3B]"
               />
             </div>
@@ -118,27 +114,6 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          {isLocalDev && (
-            <div className="mt-6 pt-4 border-t border-[#E6DED3] text-xs text-[#777067] space-y-2">
-              <p className="font-semibold text-[#4A2E24]">
-                Chế độ Local Development:
-              </p>
-              <div className="p-2.5 rounded bg-[#F7F2EA] border border-[#E6DED3] text-[#171512] font-mono text-[11px] space-y-1">
-                <div>Email: <strong>admin@moccoffee.vn</strong></div>
-                <div>Mật khẩu: <strong>MocCoffee@2026</strong></div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setEmail('admin@moccoffee.vn');
-                  setPassword('MocCoffee@2026');
-                }}
-                className="w-full py-2 px-3 rounded border border-[#A65F3B] text-[#A65F3B] font-semibold hover:bg-[#A65F3B]/10 transition-colors cursor-pointer"
-              >
-                Điền nhanh tài khoản Admin Local
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </div>

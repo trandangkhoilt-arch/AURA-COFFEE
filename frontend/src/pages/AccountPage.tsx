@@ -223,18 +223,6 @@ export default function AccountPage() {
     }
   };
 
-  const fillDemoCustomer = () => {
-    setAuthMode('login');
-    setIdentifier('0901234567');
-    setLoginPassword('MocCoffee@2026');
-  };
-
-  const fillDemoAdmin = () => {
-    setAuthMode('login');
-    setIdentifier('admin@moccoffee.vn');
-    setLoginPassword('MocCoffee@2026');
-  };
-
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setSavingProfile(true);
@@ -435,45 +423,7 @@ export default function AccountPage() {
                   {submittingAuth ? 'Đang đăng nhập...' : 'Đăng nhập vào tài khoản'}
                 </button>
 
-                <div className="pt-4 border-t border-[#E6DED3] space-y-2.5">
-                  <div className="p-3 rounded bg-[#183B2D]/10 border border-[#183B2D]/20 flex items-center justify-between gap-3">
-                    <div className="text-xs">
-                      <span className="font-semibold text-[#183B2D] flex items-center gap-1.5">
-                        <User className="w-3.5 h-3.5" />
-                        Tài khoản Khách hàng (Quyền giới hạn):
-                      </span>
-                      <span className="text-[#555] font-mono text-[11px] block mt-0.5">
-                        SĐT: <strong>0901234567</strong> • MK: <strong>MocCoffee@2026</strong>
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={fillDemoCustomer}
-                      className="px-2.5 py-1.5 rounded bg-[#183B2D] hover:bg-[#122C21] text-white text-xs font-semibold shrink-0 cursor-pointer shadow-xs"
-                    >
-                      Điền ngay
-                    </button>
-                  </div>
-
-                  <div className="p-3 rounded bg-[#A65F3B]/10 border border-[#A65F3B]/25 flex items-center justify-between gap-3">
-                    <div className="text-xs">
-                      <span className="font-semibold text-[#A65F3B] flex items-center gap-1.5">
-                        <Crown className="w-3.5 h-3.5" />
-                        Tài khoản Quản trị viên (Admin - Full Option):
-                      </span>
-                      <span className="text-[#555] font-mono text-[11px] block mt-0.5">
-                        Email: <strong>admin@moccoffee.vn</strong> • MK: <strong>MocCoffee@2026</strong>
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={fillDemoAdmin}
-                      className="px-2.5 py-1.5 rounded bg-[#A65F3B] hover:bg-[#8E4F30] text-white text-xs font-semibold shrink-0 cursor-pointer shadow-xs"
-                    >
-                      Điền ngay
-                    </button>
-                  </div>
-
+                <div className="pt-4 border-t border-[#E6DED3]">
                   <p className="text-xs text-center text-[#777067]">
                     Bạn đã đặt hàng nhưng chưa có tài khoản?{' '}
                     <button
