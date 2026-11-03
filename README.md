@@ -132,33 +132,18 @@ moc-coffee/
 
 ---
 
-## 7. Hướng Dẫn Triển Khai Lên Cloudflare (Tóm Tắt)
-Xem hướng dẫn đầy đủ 21 bước tại [`docs/deployment.md`](docs/deployment.md):
+## 7. Hướng Dẫn Triển Khai Lên Cloudflare Pages
+Xem hướng dẫn tại [`docs/deployment.md`](docs/deployment.md). Với Pages kết nối GitHub:
+- Repository: `trandangkhoilt-arch/AURA-COFFEE`, nhánh `main`
+- Root directory: `/` (hoặc để trống)
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Không đặt Deploy command là `npx wrangler deploy`; Pages tự xuất bản sau khi build.
+
+Với triển khai thủ công bằng Wrangler:
 ```bash
-# 1. Đăng nhập Cloudflare
 npx wrangler login
-
-# 2. Tạo D1 Database và cập nhật database_id vào wrangler.jsonc
-npx wrangler d1 create moc-coffee-db
-
-# 3. Tạo Workers KV Namespace
-npx wrangler kv:namespace create moc-coffee-kv-assets
-# Đồng bộ hình ảnh mẫu vào Workers KV:
-npm run seed:kv
-
-# 4. Tạo Cloudflare Vectorize Index cho AI Barista Chatbot
-npx wrangler vectorize create moc-coffee-vectors --dimensions=1024 --metric=cosine
-# Đồng bộ Vector tri thức & sản phẩm lên Vectorize:
-npm run seed:vectorize
-
-# 4. Chạy migration lên D1 Production
 npm run db:migrate:prod
-
-# 5. Thiết lập Secret cho tài khoản Admin trên Production
-npx wrangler secret put ADMIN_BOOTSTRAP_EMAIL
-npx wrangler secret put ADMIN_BOOTSTRAP_PASSWORD
-
-# 6. Build và Deploy lên Cloudflare Workers
 npm run deploy:web
 ```
 
@@ -167,4 +152,5 @@ npm run deploy:web
 ## 8. Troubleshooting & Cập Nhật Sau Khi Deploy
 - **Lỗi `D1_ERROR: no such table`**: Đảm bảo bạn đã chạy `npm run db:migrate:prod` với đúng `database_id` trong `wrangler.jsonc`.
 - **Lỗi tải ảnh Workers KV (`503 KV_NOT_CONFIGURED`)**: Kiểm tra KV Namespace đã được tạo bằng `npx wrangler kv:namespace create moc-coffee-kv-assets` và khớp với binding `KV` trong `wrangler.jsonc`.
-- **Cập nhật giao diện hoặc API sau khi sửa code**: Chạy `npm test && npm run build && npx wrangler deploy`.
+- **Deploy báo "Workers-specific command in a Pages project"**: Không dùng `npx wrangler deploy`; dùng Cloudflare Pages Git integration hoặc `npx wrangler pages deploy dist --project-name aura-coffee`.
+- **Cập nhật giao diện hoặc API sau khi sửa code**: Chạy `npm test && npm run build`; với Pages kết nối GitHub, push lên nhánh production để Cloudflare tự deploy.

@@ -294,11 +294,15 @@ export async function ensureDatabaseInitialized(env: WorkerEnv): Promise<void> {
         .catch(() => {});
     }
 
-    // Bootstrap Admin & Demo Customer Account safely
+    // Bootstrap credentials are required in production; development keeps local defaults.
+    const isDev = (env.ENVIRONMENT || 'development') !== 'production';
     const adminCount = await env.DB.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'admin'").first<{ count: number }>();
     if (!adminCount || adminCount.count === 0) {
-      const bootstrapEmail = env.ADMIN_BOOTSTRAP_EMAIL || 'admin@moccoffee.vn';
-      const bootstrapPass = env.ADMIN_BOOTSTRAP_PASSWORD || 'MocCoffee@2026';
+      const bootstrapEmail = env.ADMIN_BOOTSTRAP_EMAIL || (isDev ? 'admin@moccoffee.vn' : '');
+      const bootstrapPass = env.ADMIN_BOOTSTRAP_PASSWORD || (isDev ? 'MocCoffee@2026' : '');
+      if (!bootstrapEmail || !bootstrapPass) {
+        throw new Error('Production admin bootstrap requires ADMIN_BOOTSTRAP_EMAIL and ADMIN_BOOTSTRAP_PASSWORD.');
+      }
 
       const { hash, salt } = await hashPassword(bootstrapPass);
       await env.DB.prepare(
@@ -308,17 +312,18 @@ export async function ensureDatabaseInitialized(env: WorkerEnv): Promise<void> {
         .bind(bootstrapEmail.toLowerCase(), hash, salt)
         .run();
 
-      await env.DB.prepare(
-        `INSERT OR IGNORE INTO users (email, phone, full_name, password_hash, password_salt, role, province, district, ward, shipping_address, is_active)
-         VALUES ('khachhang@moccoffee.vn', '0901234567', 'Nguyễn Minh Anh', ?, ?, 'customer', 'TP. Hồ Chí Minh', 'Quận 3', 'Phường Võ Thị Sáu', 'Số 128 Điện Biên Phủ', 1)`
-      )
-        .bind(hash, salt)
-        .run();
+      if (isDev) {
+        await env.DB.prepare(
+          `INSERT OR IGNORE INTO users (email, phone, full_name, password_hash, password_salt, role, province, district, ward, shipping_address, is_active)
+           VALUES ('khachhang@moccoffee.vn', '0901234567', 'Nguyễn Minh Anh', ?, ?, 'customer', 'TP. Hồ Chí Minh', 'Quận 3', 'Phường Võ Thị Sáu', 'Số 128 Điện Biên Phủ', 1)`
+        )
+          .bind(hash, salt)
+          .run();
+      }
     }
 
     // Seed initial catalog only in non-production or when catalog is completely empty
     const prodCount = await env.DB.prepare('SELECT COUNT(*) as count FROM products').first<{ count: number }>();
-    const isDev = (env.ENVIRONMENT || 'development') !== 'production';
     if ((!prodCount || prodCount.count === 0) && isDev) {
       await env.DB.batch([
         env.DB.prepare(`

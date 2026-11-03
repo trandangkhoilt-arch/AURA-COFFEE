@@ -1,6 +1,6 @@
-# Quy Trình Triển Khai Lên Cloudflare (21 Bước Đầy Đủ) — AURA COFFEE
+# Quy Trình Triển Khai Lên Cloudflare Pages — AURA COFFEE
 
-Tài liệu này hướng dẫn từng bước từ cài đặt môi trường Local cho đến khi triển khai hoàn chỉnh lên hạ tầng **Cloudflare Workers + D1 + Workers KV** mà không phụ thuộc vào máy tính cá nhân sau khi deploy.
+Ứng dụng này được cấu hình là **Cloudflare Pages** với Pages Functions (Hono Worker), D1, Workers KV, Workers AI và Vectorize. Không dùng lệnh `wrangler deploy` dành cho Workers.
 
 ---
 
@@ -29,14 +29,14 @@ npx wrangler login
 ```
 Trình duyệt sẽ mở trang xác thực tài khoản Cloudflare của bạn.
 
-### Bước 5: Tạo cơ sở dữ liệu Cloudflare D1 trên Production
+### Bước 5: Tạo cơ sở dữ liệu Cloudflare D1
 ```bash
 npx wrangler d1 create moc-coffee-db
 ```
 Lệnh này trả về thông tin `database_id` (định dạng UUID).
 
 ### Bước 6: Cập nhật `database_id` vào cấu hình `wrangler.jsonc`
-Mở tệp `wrangler.jsonc` và thay thế giá trị `REPLACE_WITH_YOUR_D1_DATABASE_ID` bằng `database_id` thật vừa nhận được ở Bước 5:
+Mở tệp `wrangler.jsonc` và Thay `database_id` trong cấu hình bằng ID vừa nhận được:
 ```jsonc
 "d1_databases": [
   {
@@ -56,7 +56,7 @@ Mở tệp `wrangler.jsonc` và thay thế giá trị `REPLACE_WITH_YOUR_D1_DATA
 ### Bước 7: Tạo Cloudflare Vectorize Index & Workers KV Namespace
 ```bash
 # Tạo Vectorize Index 1024 chiều cho AI
-npx wrangler vectorize create moc-coffee-vectors --dimensions=1024 --metric=cosine
+npx wrangler vectorize create moc-coffee-vector-index --dimensions=1024 --metric=cosine
 npm run seed:vectorize
 
 # Tạo KV Namespace cho Media Assets
@@ -64,16 +64,12 @@ npx wrangler kv:namespace create moc-coffee-kv-assets
 npm run seed:kv
 ```
 
-### Bước 7b: Cấu hình KV Namespace
-```bash
-npx wrangler kv:namespace create moc-coffee-kv-assets
-```
-
 ### Bước 8: Kiểm tra cấu hình Binding trong `wrangler.jsonc`
-Đảm bảo `wrangler.jsonc` có đầy đủ 3 bindings:
+Đảm bảo `wrangler.jsonc` có đầy đủ các bindings:
 - `DB` (D1 Database: `moc-coffee-db`)
 - `KV` (Workers KV Namespace: `moc-coffee-kv-assets`)
-- `ASSETS` (Workers Static Assets: `./dist/client`)
+- `AI` (Workers AI)
+- `VECTORIZE` (Vectorize index: `moc-coffee-vector-index`)
 
 ### Bước 9: Chạy Migration cho D1 tại Local
 ```bash
@@ -87,12 +83,13 @@ npm run db:seed
 *(Lưu ý: Không chạy lệnh seed mẫu đè lên cơ sở dữ liệu Production đang vận hành thực tế. Nếu muốn khởi tạo danh mục sản phẩm ban đầu trên Production mới tinh, kiểm tra kỹ nội dung `seeds/seed.sql` trước khi thực thi).*
 
 ### Bước 11: Cấu hình Secrets và Bootstrap tài khoản Admin trên Production
-Tuyệt đối không lưu mật khẩu Admin trong `wrangler.jsonc` hay Git. Hãy chạy lệnh sau để thiết lập biến mật trên Cloudflare:
+Trước lần truy cập đầu tiên vào API trên database mới, hãy thêm `ADMIN_BOOTSTRAP_EMAIL` và `ADMIN_BOOTSTRAP_PASSWORD` tại Pages project `aura-coffee` → **Settings → Variables and Secrets**. Đặt mật khẩu dưới dạng secret. Tuyệt đối không lưu mật khẩu trong `wrangler.jsonc` hay Git.
+Có thể cấu hình bằng Wrangler:
 ```bash
-npx wrangler secret put ADMIN_BOOTSTRAP_EMAIL
-npx wrangler secret put ADMIN_BOOTSTRAP_PASSWORD
+npx wrangler pages secret put ADMIN_BOOTSTRAP_EMAIL --project-name aura-coffee
+npx wrangler pages secret put ADMIN_BOOTSTRAP_PASSWORD --project-name aura-coffee
 ```
-Ngoài ra, khi triển khai Production, cập nhật biến `"ENVIRONMENT": "production"` trong mục `"vars"` của `wrangler.jsonc`.
+Không dùng giá trị mật khẩu mặc định ở local cho Production.
 
 ### Bước 12: Chạy Migration tạo bảng trên D1 Production
 ```bash
@@ -103,23 +100,31 @@ npm run db:migrate:prod
 ```bash
 npm run build
 ```
-Lệnh này kiểm tra kiểu TypeScript (`tsc --noEmit`), đóng gói Worker (`dist/moc_coffee/`) và đóng gói React SPA (`dist/client/`).
+Lệnh này tạo React SPA và Pages Function tại `dist/_worker.js`. Kiểm tra kiểu và test riêng bằng `npm run typecheck && npm test`.
 
-### Bước 14: Deploy toàn bộ hệ thống (Worker + Static Assets) lên Cloudflare
+### Bước 14: Deploy lên Cloudflare Pages
+**Khuyến nghị — kết nối GitHub:** Trong Cloudflare Dashboard, tạo Pages project từ repository và cấu hình:
+- Production branch: `main`
+- Root directory: `/` (hoặc để trống)
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Để trống Deploy command tùy chỉnh; Pages sẽ tự xuất bản sau khi build.
+
+**Triển khai thủ công bằng Wrangler:**
 ```bash
-npx wrangler deploy
+npx wrangler pages deploy dist --project-name aura-coffee
 ```
-Sau khi hoàn tất, Wrangler sẽ cung cấp địa chỉ dạng `https://moc-coffee.<subdomain>.workers.dev`.
+Trang web sẽ có URL dạng `https://aura-coffee-<suffix>.pages.dev`.
 
 ### Bước 15: Cấu hình Custom Domain và HTTPS
-1. Truy cập **Cloudflare Dashboard** → **Workers & Pages** → chọn **moc-coffee**.
-2. Vào mục **Settings** → **Domains & Routes** → bấm **Add** → **Custom Domain**.
+1. Truy cập **Cloudflare Dashboard** → **Workers & Pages** → chọn Pages project `aura-coffee`.
+2. Vào mục **Custom domains** và thêm tên miền của bạn.
 3. Nhập tên miền của bạn (ví dụ: `moccoffee.vn` hoặc `shop.moccoffee.vn`). Cloudflare sẽ tự động cấp chứng chỉ SSL/TLS (HTTPS).
 
 ### Bước 16: Kiểm tra API trên Production
 Mở trình duyệt hoặc chạy `curl`:
 ```bash
-curl https://moc-coffee.<subdomain>.workers.dev/api/v1/health
+curl https://aura-coffee-<suffix>.pages.dev/api/v1/health
 ```
 Kết quả trả về `"status": "healthy"`, `"d1Connected": true`, `"kvConnected": true`.
 

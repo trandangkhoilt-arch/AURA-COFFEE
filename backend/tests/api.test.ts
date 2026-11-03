@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { DatabaseSync } from 'node:sqlite';
 import { app } from '../src/index';
-import type { WorkerEnv } from '../src/db/init';
+import { ensureDatabaseInitialized, type WorkerEnv } from '../src/db/init';
 import { createFallbackVectorize } from '../src/db/fallback';
 
 // Tạo D1Database adapter chạy trên SQLite thực tế (node:sqlite DatabaseSync) để kiểm thử toàn diện
@@ -129,6 +129,31 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
       ADMIN_BOOTSTRAP_EMAIL: 'admin@moccoffee.vn',
       ADMIN_BOOTSTRAP_PASSWORD: 'StrongPassword#2026',
     };
+  });
+
+  it('does not create default production credentials without bootstrap secrets', async () => {
+    const productionEnv: WorkerEnv = {
+      DB: createSqliteD1Adapter(),
+      KV: createMemoryKVAdapter(),
+      ENVIRONMENT: 'production',
+    };
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    try {
+      await ensureDatabaseInitialized(productionEnv);
+      const admin = await productionEnv.DB.prepare(
+        "SELECT COUNT(*) as count FROM users WHERE role = 'admin'"
+      ).first<{ count: number }>();
+      expect(admin?.count).toBe(0);
+      expect(errorSpy).toHaveBeenCalledWith(
+        'Database init error:',
+        expect.objectContaining({
+          message: expect.stringContaining('ADMIN_BOOTSTRAP_EMAIL and ADMIN_BOOTSTRAP_PASSWORD'),
+        })
+      );
+    } finally {
+      errorSpy.mockRestore();
+    }
   });
 
   it('1. Lấy danh sách sản phẩm từ D1 (GET /api/v1/products)', async () => {

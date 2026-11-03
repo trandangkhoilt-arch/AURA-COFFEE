@@ -1,6 +1,6 @@
 {
-  // Cấu hình chuẩn cho Cloudflare Pages (coffeet1.pages.dev)
-  "name": "coffeet1",
+  // Cấu hình chuẩn cho Cloudflare Pages
+  "name": "aura-coffee",
   "compatibility_date": "2025-02-14",
   "pages_build_output_dir": "./dist",
   // Tích hợp trực tiếp Cloudflare Workers AI (https://dash.cloudflare.com/.../ai/models)
@@ -15,7 +15,7 @@
     }
   ],
   "vars": {
-    "ENVIRONMENT": "development",
+    "ENVIRONMENT": "production",
     "DEFAULT_SHIPPING_FEE": "30000",
     "FREE_SHIPPING_THRESHOLD": "500000",
     "CF_EMBEDDING_MODEL": "@cf/baai/bge-m3",
@@ -25,13 +25,13 @@
     {
       "binding": "DB",
       "database_name": "moc-coffee-db",
-      "database_id": "5f8f3bde-67f5-46f8-94d5-745ea375393b"
+      "database_id": "1b01749f-8d22-427d-aad0-4285763161ef"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "7f692b14a6fa44faa10e33657edaf6f3"
+      "id": "e7e3a195265349d8a5b17c4816d17437"
     }
   ]
 }
