@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect, beforeAll, vi } from 'vitest';
 import { DatabaseSync } from 'node:sqlite';
 import { app } from '../src/index';
 import type { WorkerEnv } from '../src/db/init';
@@ -635,6 +635,31 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
   });
 
   it('18. Trợ lý Barista Chatbot tư vấn sản phẩm từ D1 và tra cứu đơn hàng theo SĐT', async () => {
+    const catalogRes = await app.request(
+      '/api/v1/chat',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Liệt kê tất cả sản phẩm hiện có trên shop' }),
+      },
+      env
+    );
+    expect(catalogRes.status).toBe(200);
+    const catalogJson = (await catalogRes.json()) as any;
+    expect(catalogJson.data.rag.llmModel).toBe('d1-product-catalog');
+    for (const productName of [
+      'Robusta Buôn Ma Thuột',
+      'Arabica Cầu Đất',
+      'Blend Phin Việt',
+      'Espresso House Blend',
+      'Fine Robusta Honey Đắk Nông',
+      'Arabica Sơn La Bourbon',
+      'Cold Brew Signature Blend',
+      'Hộp Quà Tinh Hoa Cà Phê Việt',
+    ]) {
+      expect(catalogJson.data.reply).toContain(productName);
+    }
+
     const recRes = await app.request(
       '/api/v1/chat',
       {
@@ -767,6 +792,7 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
 
     // 3. Kiểm thử tích hợp trực tiếp Cloudflare Workers AI binding (env.AI.run với @cf/baai/bge-m3 & @cf/meta/llama-3.3-70b-instruct-fp8-fast)
     const aiCalls: string[] = [];
+    const llmMessages: Array<{ role: string; content: string }> = [];
     const envWithWorkersAI: WorkerEnv = {
       ...env,
       CF_EMBEDDING_MODEL: '@cf/baai/bge-m3',
@@ -780,9 +806,10 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
               data: texts.map(() => Array.from({ length: 64 }, (_, i) => (i === 0 ? 1 : 0.1))),
             };
           }
+          llmMessages.push(...input.messages);
           return {
             response:
-              'Dựa trên Knowledge Base của **MỘC Coffee**, lợi thế cạnh tranh cốt lõi là **100% hạt chín đỏ**, rang mộc mẻ nhỏ (**Small-batch**) và **xay tươi miễn phí** 5 cấp độ.',
+              'Mình có thể kể một câu đùa nhẹ nhàng để bạn thư giãn: Vì sao chiếc máy pha cà phê luôn bình tĩnh? Vì nó biết cách giữ áp suất!',
           };
         },
       },
@@ -794,7 +821,7 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: 'Lợi thế cạnh tranh của MỘC Coffee là gì?',
+          message: 'Website có những bài viết nào về cà phê, đồng thời shop bán gì?',
         }),
       },
       envWithWorkersAI
@@ -803,10 +830,130 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
     const workersAiJson = (await workersAiChatRes.json()) as any;
     expect(workersAiJson.success).toBe(true);
     expect(workersAiJson.data.rag.llmModel).toContain('@cf/meta/llama-3.3-70b-instruct-fp8-fast');
-    expect(workersAiJson.data.reply).toContain('Small-batch');
+    expect(workersAiJson.data.reply).toContain('câu đùa nhẹ nhàng');
+    expect(llmMessages.at(-1)).toEqual({
+      role: 'user',
+      content: 'Website có những bài viết nào về cà phê, đồng thời shop bán gì?',
+    });
+    expect(llmMessages[0].content).toContain('[DANH SÁCH SẢN PHẨM ĐANG HOẠT ĐỘNG TỪ D1]');
+    for (const productName of [
+      'Robusta Buôn Ma Thuột',
+      'Arabica Cầu Đất',
+      'Blend Phin Việt',
+      'Espresso House Blend',
+      'Fine Robusta Honey Đắk Nông',
+      'Arabica Sơn La Bourbon',
+      'Cold Brew Signature Blend',
+      'Hộp Quà Tinh Hoa Cà Phê Việt',
+    ]) {
+      expect(llmMessages[0].content).toContain(productName);
+    }
+    expect(llmMessages[0].content).toContain('129.000₫');
+    expect(llmMessages[0].content).toContain('[THÔNG TIN CÁC TRANG VÀ NỘI DUNG ĐANG HIỂN THỊ TRÊN WEBSITE]');
+    expect(llmMessages[0].content).toContain('[BÀI VIẾT ĐÃ ĐĂNG TRÊN BLOG]');
+    expect(llmMessages[0].content).toContain('30.000₫');
+    expect(llmMessages[0].content).toContain('500.000₫');
+    expect(llmMessages[0].content).toContain('Bí Quyết Pha Cà Phê Phin Ngon');
     expect(aiCalls).toContain('@cf/baai/bge-m3');
     expect(aiCalls).toContain('@cf/meta/llama-3.3-70b-instruct-fp8-fast');
+
+    const productDetailRes = await app.request(
+      '/api/v1/chat',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Mô tả chi tiết sản phẩm Robusta Buôn Ma Thuột giúp mình.' }),
+      },
+      envWithWorkersAI
+    );
+    expect(productDetailRes.status).toBe(200);
+    const productDetailJson = (await productDetailRes.json()) as any;
+    expect(productDetailJson.data.rag.llmModel).toBe('d1-product-lookup');
+    expect(productDetailJson.data.reply).toContain('nông hộ canh tác lâu năm');
+    expect(productDetailJson.data.reply).toContain('129.000₫');
+    expect(aiCalls.filter((model) => !model.includes('bge'))).toHaveLength(1);
+
+    const policyCallsBefore = aiCalls.length;
+    const fastPolicyRes = await app.request(
+      '/api/v1/chat',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: 'Phí giao hàng và chính sách đổi trả thế nào?' }),
+      },
+      envWithWorkersAI
+    );
+    expect(fastPolicyRes.status).toBe(200);
+    const fastPolicyJson = (await fastPolicyRes.json()) as any;
+    expect(fastPolicyJson.data.intent).toBe('shipping_policy');
+    expect(fastPolicyJson.data.reply).toContain('Phí vận chuyển');
+    expect(aiCalls.slice(policyCallsBefore).some((model) => !model.includes('bge'))).toBe(false);
+
+    const geminiFetch = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          candidates: [{ content: { parts: [{ text: 'Đây là câu trả lời tự nhiên từ Gemini.' }] } }],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      )
+    );
+    vi.stubGlobal('fetch', geminiFetch);
+    try {
+      const geminiChatRes = await app.request(
+        '/api/v1/chat',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'Hãy kể một chuyện ngắn về buổi sáng.' }),
+        },
+        { ...env, GEMINI_API_KEY: 'test-gemini-api-key' }
+      );
+      expect(geminiChatRes.status).toBe(200);
+      const geminiJson = (await geminiChatRes.json()) as any;
+      expect(geminiJson.data.reply).toBe('Đây là câu trả lời tự nhiên từ Gemini.');
+      expect(geminiJson.data.rag.llmModel).toBe('gemini-2.5-flash');
+      expect(geminiFetch).toHaveBeenCalledOnce();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+
+    const ollamaFetch = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          model: 'qwen2.5:3b',
+          message: { role: 'assistant', content: 'Ollama đã trả lời câu hỏi bằng tiếng Việt.' },
+          done: true,
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      )
+    );
+    vi.stubGlobal('fetch', ollamaFetch);
+    try {
+      const ollamaChatRes = await app.request(
+        '/api/v1/chat',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: 'Hôm nay bạn thế nào?' }),
+        },
+        {
+          ...env,
+          OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
+          OLLAMA_MODEL: 'qwen2.5:3b',
+        }
+      );
+      expect(ollamaChatRes.status).toBe(200);
+      const ollamaJson = (await ollamaChatRes.json()) as any;
+      expect(ollamaJson.data.reply).toBe('Ollama đã trả lời câu hỏi bằng tiếng Việt.');
+      expect(ollamaJson.data.rag.llmModel).toBe('ollama/qwen2.5:3b');
+      expect(ollamaFetch).toHaveBeenCalledOnce();
+      expect(ollamaFetch.mock.calls[0][0]).toBe('http://127.0.0.1:11434/api/chat');
+      const ollamaPayload = JSON.parse(ollamaFetch.mock.calls[0][1].body as string);
+      expect(ollamaPayload.model).toBe('qwen2.5:3b');
+      expect(ollamaPayload.stream).toBe(false);
+      expect(ollamaPayload.options.num_predict).toBe(120);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
-
-

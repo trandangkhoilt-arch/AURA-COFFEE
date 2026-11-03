@@ -6,6 +6,7 @@ import type {
   CustomerUser,
   Order,
   Product,
+  ProductVariant,
   RagTraceInfo,
 } from '../../shared/types';
 import { formatVND, ORDER_STATUS_LABELS } from '../../shared/constants';
@@ -20,6 +21,37 @@ function normalizeVi(text: string): string {
   return text.toLowerCase().trim();
 }
 
+function normalizeSearchText(text: string): string {
+  return text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ')
+    .replace(/[-\s]+/g, ' ')
+    .trim();
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function formatCmsValue(value: unknown): string {
+  if (Array.isArray(value)) {
+    return value.map(formatCmsValue).filter(Boolean).join('; ');
+  }
+  if (isRecord(value)) {
+    return Object.entries(value)
+      .map(([key, item]) => `${key}: ${formatCmsValue(item)}`)
+      .filter((item) => !item.endsWith(': '))
+      .join('; ');
+  }
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  return '';
+}
+
 export async function handleBaristaChat(
   c: Context<{ Bindings: WorkerEnv; Variables: any }>,
   rawMessage: string,
@@ -28,19 +60,122 @@ export async function handleBaristaChat(
   const message = rawMessage.trim();
   const q = normalizeVi(message);
 
-  // 1. Lấy danh sách sản phẩm thực tế từ D1 Database
-  const { results: products } = await c.env.DB.prepare(
-    'SELECT * FROM products WHERE is_active = 1 ORDER BY is_featured DESC, rating_avg DESC'
-  ).all<Product>();
+  // 1. Load public shop and CMS data from D1 for current answers.
+  const [
+    productsResult,
+    variantsResult,
+    categoriesResult,
+    bannersResult,
+    siteContentResult,
+    blogPostsResult,
+  ] = await Promise.all([
+    c.env.DB.prepare(
+      `SELECT p.*, c.name as category_name, c.slug as category_slug
+       FROM products p
+       LEFT JOIN categories c ON c.id = p.category_id
+       WHERE p.is_active = 1
+       ORDER BY p.is_featured DESC, p.rating_avg DESC`
+    ).all<Product>(),
+    c.env.DB.prepare(
+      `SELECT v.* FROM product_variants v
+       JOIN products p ON p.id = v.product_id
+       WHERE v.is_active = 1 AND p.is_active = 1`
+    ).all<ProductVariant>(),
+    c.env.DB.prepare(
+      'SELECT name, slug, description FROM categories WHERE is_active = 1 ORDER BY sort_order ASC'
+    ).all<{ name: string; slug: string; description: string }>(),
+    c.env.DB.prepare(
+      'SELECT title, subtitle, eyebrow, cta_primary_text, cta_primary_link, cta_secondary_text, cta_secondary_link FROM banners WHERE is_active = 1 ORDER BY sort_order ASC'
+    ).all<{
+      title: string;
+      subtitle: string;
+      eyebrow: string;
+      cta_primary_text: string;
+      cta_primary_link: string;
+      cta_secondary_text: string;
+      cta_secondary_link: string;
+    }>(),
+    c.env.DB.prepare('SELECT section_key, title, subtitle, content_json FROM site_content').all<{
+      section_key: string;
+      title: string;
+      subtitle: string;
+      content_json: string;
+    }>(),
+    c.env.DB.prepare(
+      `SELECT title, slug, excerpt, content, category, reading_time
+       FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC LIMIT 3`
+    ).all<{
+      title: string;
+      slug: string;
+      excerpt: string;
+      content: string;
+      category: string;
+      reading_time: string;
+    }>(),
+  ]);
+  const variantsByProduct = new Map<number, ProductVariant[]>();
+  for (const variant of variantsResult.results) {
+    const variants = variantsByProduct.get(variant.product_id) || [];
+    variants.push(variant);
+    variantsByProduct.set(variant.product_id, variants);
+  }
+  const products = productsResult.results.map((product) => ({
+    ...product,
+    variants: variantsByProduct.get(product.id) || [],
+  }));
+  const siteContent = siteContentResult.results;
+  let shippingFee = Number(c.env.DEFAULT_SHIPPING_FEE || 30000);
+  let freeThreshold = Number(c.env.FREE_SHIPPING_THRESHOLD || 500000);
+  const websiteContext = [
+    '[DANH MỤC ĐANG HIỂN THỊ]',
+    ...categoriesResult.results.map(
+      (category) =>
+        `- ${category.name} (${category.slug})${category.description ? `: ${category.description.slice(0, 100)}` : ''}`
+    ),
+    '',
+    '[BANNER TRANG CHỦ ĐANG HOẠT ĐỘNG]',
+    ...bannersResult.results.map(
+      (banner) =>
+        `- ${banner.eyebrow}: ${banner.title.slice(0, 120)}. ${banner.subtitle.slice(0, 160)} Nút: ${banner.cta_primary_text} (${banner.cta_primary_link}); ${banner.cta_secondary_text} (${banner.cta_secondary_link}).`
+    ),
+    '',
+    '[NỘI DUNG WEBSITE ĐANG CẤU HÌNH TRONG CMS]',
+    ...siteContent.map((section) => {
+      let parsedContent: unknown = {};
+      try {
+        parsedContent = JSON.parse(section.content_json || '{}');
+      } catch (err) {
+        console.warn(
+          `[Chatbot] Invalid CMS JSON for section "${section.section_key}":`,
+          (err as Error)?.message
+        );
+      }
+      if (section.section_key === 'shipping_config' && isRecord(parsedContent)) {
+        if (typeof parsedContent.defaultFee === 'number') {
+          shippingFee = parsedContent.defaultFee;
+        }
+        if (typeof parsedContent.freeThreshold === 'number') {
+          freeThreshold = parsedContent.freeThreshold;
+        }
+      }
+      const details = formatCmsValue(parsedContent).slice(0, 500);
+      return `- ${section.title.slice(0, 100)} [${section.section_key}]${section.subtitle ? ` — ${section.subtitle.slice(0, 100)}` : ''}${details ? `: ${details}` : ''}`;
+    }),
+    '',
+    '[BÀI VIẾT ĐÃ ĐĂNG TRÊN BLOG]',
+    ...blogPostsResult.results.map((post) => {
+      const summary = post.excerpt || post.content;
+      return `- ${post.title} [${post.category}, ${post.reading_time}] (${post.slug}): ${summary.slice(0, 180)}`;
+    }),
+  ]
+    .join('\n')
+    .slice(0, 2000);
 
   // Lấy thông tin khách hàng đang đăng nhập (nếu có)
   const customer: CustomerUser | null = await getAuthenticatedCustomer(c);
 
-  const shippingFee = Number(c.env.DEFAULT_SHIPPING_FEE || 30000);
-  const freeThreshold = Number(c.env.FREE_SHIPPING_THRESHOLD || 500000);
-
   // 2. Thực thi quy trình RAG: Chunking -> Word Embedding (@cf/baai/bge-m3) -> Vector DB Search
-  const ragSearchResult = await searchVectorDB(c.env, message, products, 4);
+  const ragSearchResult = await searchVectorDB(c.env, message, products, 2);
 
   const buildRagTrace = (llmModelUsed: string): RagTraceInfo => ({
     pipeline: 'chunking -> word_embedding -> vector_db -> llm',
@@ -149,7 +284,7 @@ export async function handleBaristaChat(
         suggestions: [
           '📦 Tra cứu bằng SĐT 0901234567',
           '☕ Tư vấn chọn cà phê hợp gu',
-          '📞 Thông tin liên hệ MỘC Coffee',
+          '📞 Thông tin liên hệ AURA COFFEE',
         ],
         rag: buildRagTrace('d1-sql-order-engine'),
       };
@@ -168,6 +303,63 @@ export async function handleBaristaChat(
     };
   }
 
+  const isAskingProductCatalog =
+    /(liệt kê|danh sách|tất cả|toàn bộ|các sản phẩm|những sản phẩm|sản phẩm nào|có những.*(sản phẩm|dòng cà phê)|menu)/i.test(
+      q
+    );
+  if (isAskingProductCatalog) {
+    const catalogLines = products.map(
+      (product) =>
+        `• **${product.name}** — ${formatVND(product.sale_price ?? product.price)} / ${product.weight_grams}g; ${product.tasting_notes}; ${
+          product.stock > 0 ? `còn ${product.stock} gói` : 'tạm hết hàng'
+        }.`
+    );
+    return {
+      reply: `Đây là các sản phẩm đang bán trên shop AURA COFFEE:\n\n${catalogLines.join('\n')}`,
+      intent: 'recommendation',
+      recommendedProducts: products.slice(0, 4),
+      suggestions: [
+        '☕ Tư vấn cà phê hợp gu của mình',
+        '🚚 Chính sách giao hàng & đổi trả',
+        '📦 Kiểm tra đơn hàng của tôi',
+      ],
+      rag: buildRagTrace('d1-product-catalog'),
+    };
+  }
+
+  const normalizedQuestion = normalizeSearchText(message);
+  const mentionedProducts = products.filter((product) => {
+    const normalizedName = normalizeSearchText(product.name);
+    const normalizedSlug = normalizeSearchText(product.slug);
+    return (
+      normalizedQuestion.includes(normalizedName) ||
+      normalizedQuestion.includes(normalizedSlug)
+    );
+  });
+  if (
+    mentionedProducts.length === 1 &&
+    /(giá|bao nhiêu|hương vị|mùi|vị|xuất xứ|nguồn gốc|rang|sơ chế|mô tả|thông tin|còn hàng|tồn kho|đặc điểm|nào)/i.test(
+      q
+    )
+  ) {
+    const product = mentionedProducts[0];
+    return {
+      reply: `**${product.name}** (${product.weight_grams}g)\n\n${product.short_description}\n\n• **Hương vị:** ${product.tasting_notes}\n• **Xuất xứ:** ${product.origin}\n• **Giá hiện tại:** ${formatVND(product.sale_price ?? product.price)}${
+        product.sale_price ? ` (giá gốc ${formatVND(product.price)})` : ''
+      }\n• **Tình trạng:** ${
+        product.stock > 0 ? `Còn ${product.stock} gói` : 'Tạm hết hàng'
+      }\n\n${product.description}`,
+      intent: 'recommendation',
+      recommendedProducts: [product],
+      suggestions: [
+        '☕ So sánh với các dòng cà phê khác',
+        '🛒 Xem sản phẩm và tùy chọn xay',
+        '🚚 Chính sách giao hàng & đổi trả',
+      ],
+      rag: buildRagTrace('d1-product-lookup'),
+    };
+  }
+
   // 4. Phân loại Intent dựa trên câu hỏi & kết quả truy xuất Vector DB
   const isAskingBrewing =
     !/(tư vấn|chọn|gợi ý|mua|loại nào)/i.test(q) &&
@@ -179,7 +371,7 @@ export async function handleBaristaChat(
     );
 
   const isAskingBrandOrAdvantage =
-    /(nguồn gốc|nông trại|vùng trồng|câu chuyện|mộc coffee là|địa chỉ|hotline|liên hệ|số điện thoại shop|ở đâu|lợi thế|ưu điểm|khác biệt|rang mộc là gì)/i.test(
+    /(nguồn gốc|nông trại|vùng trồng|câu chuyện|mộc coffee là|aura coffee là|địa chỉ|hotline|liên hệ|số điện thoại shop|ở đâu|lợi thế|ưu điểm|khác biệt|rang mộc là gì)/i.test(
       q
     );
 
@@ -195,15 +387,21 @@ export async function handleBaristaChat(
   else if (isAskingRecommendation) detectedIntent = 'recommendation';
 
   // 5. GỌI CLOUDFLARE WORKERS AI LLM (hoặc Gemini 2.5 Flash) VỚI NGỮ CẢNH ĐÃ TRUY XUẤT TỪ VECTOR DB
-  const llmRes = await generateRagLLMResponse(
-    c.env,
-    message,
-    history,
-    ragSearchResult.topChunks,
-    shippingFee,
-    freeThreshold,
-    customer?.full_name
-  );
+  const useInstantKnowledgeReply =
+    isAskingBrewing || isAskingPolicyOrBenefit || isAskingBrandOrAdvantage;
+  const llmRes = useInstantKnowledgeReply
+    ? { reply: null, llmModelUsed: `${DEFAULT_CF_LLM_MODEL} (instant-knowledge)` }
+    : await generateRagLLMResponse(
+        c.env,
+        message,
+        history,
+        ragSearchResult.topChunks,
+        products,
+        websiteContext,
+        shippingFee,
+        freeThreshold,
+        customer?.full_name
+      );
 
   // Nếu Workers AI LLM (hoặc Gemini) trả về câu trả lời thành công, kết hợp ngay với thẻ sản phẩm và RAG trace
   if (llmRes.reply) {
@@ -240,7 +438,7 @@ export async function handleBaristaChat(
         products[0];
       return {
         reply:
-          '✨ **Công thức ủ Cold Brew thanh mát chuẩn Barista MỘC Coffee:**\n\n1. **Chọn hạt & Cỡ xay:** Dùng **Cold Brew Signature Blend** hoặc **Arabica Cầu Đất** xay thô (cỡ hạt đường kính lớn).\n2. **Tỷ lệ vàng 1:10:** 50g cà phê + 500ml nước lọc mát.\n3. **Thời gian ủ:** Khuấy nhẹ cho thấm đều, đậy kín và ủ trong ngăn mát tủ lạnh **16 – 20 tiếng**.\n4. **Thưởng thức:** Lọc qua giấy lọc, thêm đá hoặc một lát cam vàng / mật ong rừng cực kỳ cuốn!',
+          '✨ **Công thức ủ Cold Brew thanh mát chuẩn Barista AURA COFFEE:**\n\n1. **Chọn hạt & Cỡ xay:** Dùng **Cold Brew Signature Blend** hoặc **Arabica Cầu Đất** xay thô (cỡ hạt đường kính lớn).\n2. **Tỷ lệ vàng 1:10:** 50g cà phê + 500ml nước lọc mát.\n3. **Thời gian ủ:** Khuấy nhẹ cho thấm đều, đậy kín và ủ trong ngăn mát tủ lạnh **16 – 20 tiếng**.\n4. **Thưởng thức:** Lọc qua giấy lọc, thêm đá hoặc một lát cam vàng / mật ong rừng cực kỳ cuốn!',
         intent: 'brewing_guide',
         recommendedProducts: coldBrewProd ? [coldBrewProd] : [],
         suggestions: [
@@ -271,12 +469,12 @@ export async function handleBaristaChat(
     if (/(bảo quản|giữ hương|hạn sử dụng|tủ lạnh)/i.test(q)) {
       return {
         reply:
-          '🛡️ **Mẹo bảo quản cà phê rang mộc giữ trọn hương thơm:**\n\n• Luôn kéo kín khóa Zip sau khi lấy cà phê và bóp nhẹ để đẩy không khí thừa qua **Van 1 chiều** trên túi MỘC Coffee.\n• Để nơi khô ráo, thoáng mát (20°C – 28°C), tránh ánh nắng trực tiếp và **tuyệt đối không bảo quản trong tủ lạnh** (vì cà phê dễ ngưng tụ ẩm và hút mùi thực phẩm).\n• Ngon nhất trong vòng **30 – 45 ngày** kể từ khi mở túi (hoặc 6 tháng từ ngày rang).',
+          '🛡️ **Mẹo bảo quản cà phê rang mộc giữ trọn hương thơm:**\n\n• Luôn kéo kín khóa Zip sau khi lấy cà phê và bóp nhẹ để đẩy không khí thừa qua **Van 1 chiều** trên túi.\n• Để nơi khô ráo, thoáng mát (20°C – 28°C), tránh ánh nắng trực tiếp và **không bảo quản trong tủ lạnh** (vì cà phê dễ ngưng tụ ẩm và hút mùi thực phẩm).\n• Ngon nhất trong vòng **30 – 45 ngày** kể từ khi mở túi (hoặc 6 tháng từ ngày rang).',
         intent: 'brewing_guide',
         suggestions: [
           '🫖 Hướng dẫn pha Phin chuẩn vị',
           '☕ Tư vấn cà phê hợp gu của mình',
-          '🛡️ Quyền lợi khách hàng tại MỘC',
+          '🛡️ Quyền lợi khách hàng tại AURA COFFEE',
         ],
         rag: buildRagTrace(synthModelName),
       };
@@ -302,11 +500,11 @@ export async function handleBaristaChat(
   // 6.2. Chính sách Giao hàng, Đổi trả & Quyền lợi khách hàng (Nâng cấp đầy đủ từ Knowledge Base)
   if (isAskingPolicyOrBenefit) {
     return {
-      reply: `🚚 **Chính sách Giao hàng, Đổi trả & Quyền lợi Khách hàng tại MỘC Coffee:**\n\n• **Phí vận chuyển:** Đồng giá **${formatVND(shippingFee)}** toàn quốc. **Miễn phí vận chuyển (Freeship)** cho mọi đơn hàng từ **${formatVND(freeThreshold)}** trở lên!\n• **Thời gian nhận hàng:** Xử lý & rang xay mới trong 24h. Giao nội thành TP.HCM, Hà Nội & Đắk Lắk từ **1 – 2 ngày**; các tỉnh khác từ **2 – 4 ngày làm việc**.\n• **Quyền lợi Đồng kiểm & Thanh toán:** Hỗ trợ **COD** (được kiểm tra ngoại quan gói hàng nguyên niêm phong trước khi thanh toán) và **Chuyển khoản ngân hàng**.\n• **Quyền lợi Xay miễn phí:** Tùy chọn để **Nguyên hạt** hoặc xay miễn phí theo **5 cỡ chuẩn** (Pha Phin, Pha Máy Espresso, Pour Over V60, Cold Brew).\n• **Cam kết Đổi mới 100% trong 7 ngày:** Đổi mới miễn phí nếu bao bì rách, hở van 1 chiều hoặc giao nhầm loại hạt/cỡ xay.`,
+      reply: `🚚 **Chính sách Giao hàng, Đổi trả & Quyền lợi Khách hàng tại AURA COFFEE:**\n\n• **Phí vận chuyển:** Đồng giá **${formatVND(shippingFee)}** toàn quốc. **Miễn phí vận chuyển (Freeship)** cho mọi đơn hàng từ **${formatVND(freeThreshold)}** trở lên!\n• **Thời gian nhận hàng:** Xử lý & rang xay mới trong 24h. Giao nội thành TP.HCM, Hà Nội & Đắk Lắk từ **1 – 2 ngày**; các tỉnh khác từ **2 – 4 ngày làm việc**.\n• **Quyền lợi Đồng kiểm & Thanh toán:** Hỗ trợ **COD** (được kiểm tra ngoại quan gói hàng nguyên niêm phong trước khi thanh toán) và **Chuyển khoản ngân hàng**.\n• **Quyền lợi Xay miễn phí:** Tùy chọn để **Nguyên hạt** hoặc xay miễn phí theo **5 cỡ chuẩn** (Pha Phin, Pha Máy Espresso, Pour Over V60, Cold Brew).\n• **Cam kết Đổi mới 100% trong 7 ngày:** Đổi mới miễn phí nếu bao bì rách, hở van 1 chiều hoặc giao nhầm loại hạt/cỡ xay.`,
       intent: 'shipping_policy',
       suggestions: [
         '☕ Tư vấn chọn cà phê hợp gu',
-        '🌟 Lợi thế cà phê rang mộc MỘC Coffee',
+        '🌟 Lợi thế cà phê rang mộc AURA COFFEE',
         '📦 Kiểm tra đơn hàng của tôi',
       ],
       rag: buildRagTrace(synthModelName),
@@ -317,11 +515,11 @@ export async function handleBaristaChat(
   if (isAskingBrandOrAdvantage) {
     return {
       reply:
-        '🌱 **Về MỘC Coffee & 5 Lợi Thế Khác Biệt ("Hạt Mộc – Vị Nguyên Bản – Tâm Người Việt"):**\n\n1. **100% Rang Mộc Nguyên Bản:** Không tẩm bơ, không mỡ gà, không hương liệu hóa học, không độn bắp/đậu. Nước pha màu nâu hổ phách trong trẻo, an toàn cho sức khỏe.\n2. **Vùng nguyên liệu tuyển chọn 100% trái chín:** Robusta từ **Buôn Ma Thuột (Đắk Lắk, 500–800m)** & **Đắk Mil (Đắk Nông)**; Arabica từ **Cầu Đất (Đà Lạt, 1.500m)** & **Sơn La**.\n3. **Rang mẻ nhỏ (Small-batch Roasting) mới mỗi ngày:** Kiểm soát hồ sơ nhiệt riêng biệt để giữ vị ngọt hậu tự nhiên.\n4. **Bao bì Kraft khóa Zip & Van 1 chiều:** Thoát khí CO2 tự nhiên, ngăn oxy xâm nhập giúp giữ hương suốt 45 ngày.\n5. **Địa chỉ & Liên hệ:** Xưởng rang tại Buôn Ma Thuột, Đắk Lắk & Showroom Số 86 Nguyễn Huệ, Quận 1, TP.HCM — Hotline: `1900 6868` / `0901 234 567` — Email: `hello@moccoffee.vn`.',
+        '🌱 **Về AURA COFFEE & những giá trị khác biệt:**\n\n1. **Cà phê rang nguyên bản:** Không tẩm bơ, không mỡ gà, không hương liệu hóa học, không độn bắp/đậu. Nước pha màu nâu hổ phách trong trẻo.\n2. **Vùng nguyên liệu tuyển chọn:** Robusta từ **Buôn Ma Thuột (Đắk Lắk)** & **Đắk Mil (Đắk Nông)**; Arabica từ **Cầu Đất (Đà Lạt)** & **Sơn La**.\n3. **Rang mẻ nhỏ:** Kiểm soát hồ sơ nhiệt riêng biệt để giữ vị ngọt hậu tự nhiên.\n4. **Bao bì có van 1 chiều:** Thoát khí CO2 tự nhiên, ngăn oxy xâm nhập.\n5. **Thông tin liên hệ:** Địa chỉ, số điện thoại, email và giờ làm việc chưa được cập nhật. Vui lòng tham khảo trang Liên hệ.',
       intent: 'brand_story',
       recommendedProducts: products.slice(0, 2),
       suggestions: [
-        '🛡️ Quyền lợi khách hàng khi mua tại MỘC',
+        '🛡️ Quyền lợi khách hàng khi mua tại AURA COFFEE',
         '☕ Tư vấn loại cà phê bán chạy nhất',
         '🫖 Cà phê nào hợp pha Phin sữa đá?',
       ],
@@ -337,7 +535,7 @@ export async function handleBaristaChat(
       );
       return {
         reply:
-          '🎁 Nếu bạn đang tìm món quà sang trọng, đậm bản sắc Việt dành tặng đối tác hoặc người thân, mình gợi ý **Hộp Quà Tinh Hoa Cà Phê Việt (750g)**.\n\nSet quà gồm trọn bộ **3 gói 250g** tiêu biểu nhất của MỘC (*Robusta Buôn Ma Thuột, Arabica Cầu Đất, Blend Phin Việt*) kèm **Phin nhôm cao cấp** và cẩm nang pha chế trong hộp giấy mỹ thuật chỉn chu!',
+          '🎁 Nếu bạn đang tìm món quà sang trọng, đậm bản sắc Việt dành tặng đối tác hoặc người thân, mình gợi ý **Hộp Quà Tinh Hoa Cà Phê Việt (750g)**.\n\nSet quà gồm trọn bộ **3 gói 250g** tiêu biểu (*Robusta Buôn Ma Thuột, Arabica Cầu Đất, Blend Phin Việt*) kèm **Phin nhôm cao cấp** và cẩm nang pha chế trong hộp giấy mỹ thuật chỉn chu!',
         intent: 'recommendation',
         recommendedProducts: giftMatched.length > 0 ? giftMatched : products.slice(0, 2),
         suggestions: [
@@ -398,7 +596,7 @@ export async function handleBaristaChat(
       );
       return {
         reply:
-          '🔥 Nếu bạn yêu thích **gu cà phê Việt truyền thống: đậm đà, sánh quyện, không chua, hậu ngọt sô-cô-la đen và giúp tỉnh táo tức thì**, bạn nhất định phải thử bộ sản phẩm bán chạy nhất của MỘC:\n\n1. **Robusta Buôn Ma Thuột:** 100% Robusta sẻ Đắk Lắk rang vừa đậm, thể chất dày dặn, cực kỳ mạnh mẽ.\n2. **Blend Phin Việt (70% Robusta – 30% Arabica):** Đậm vị truyền thống nhưng dậy tầng hương caramel & bơ hạt quyến rũ của Arabica Cầu Đất, pha **cà phê sữa đá** hay **đen đá** đều tuyệt hảo!\n3. **Fine Robusta Honey Đắk Nông:** Chế biến mật ong lên men tự nhiên, độ ngọt cao.',
+          '🔥 Nếu bạn yêu thích **gu cà phê Việt truyền thống: đậm đà, sánh quyện, không chua, hậu ngọt sô-cô-la đen và giúp tỉnh táo tức thì**, bạn nhất định phải thử những dòng cà phê được tuyển chọn:\n\n1. **Robusta Buôn Ma Thuột:** 100% Robusta sẻ Đắk Lắk rang vừa đậm, thể chất dày dặn, cực kỳ mạnh mẽ.\n2. **Blend Phin Việt (70% Robusta – 30% Arabica):** Đậm vị truyền thống nhưng dậy tầng hương caramel & bơ hạt quyến rũ của Arabica Cầu Đất, pha **cà phê sữa đá** hay **đen đá** đều tuyệt hảo!\n3. **Fine Robusta Honey Đắk Nông:** Chế biến mật ong lên men tự nhiên, độ ngọt cao.',
         intent: 'recommendation',
         recommendedProducts: matched.length > 0 ? matched.slice(0, 3) : products.slice(0, 2),
         suggestions: [
@@ -422,7 +620,7 @@ export async function handleBaristaChat(
       .join('\n');
 
     return {
-      reply: `☕ Hiện tại **MỘC Coffee** có đầy đủ các dòng cà phê rang mộc 100% tuyển chọn (hỗ trợ để **Nguyên hạt** hoặc **Xay miễn phí 5 cấp độ** theo phin/máy của bạn):\n\n${summaryLines}\n\nBạn thường thích uống **pha Phin đậm đà (đen đá/sữa đá)**, **pha Máy Espresso**, vị **thơm thanh nhẹ nhàng** hay tìm **Hộp quà biếu** để mình chọn đúng loại hợp gu nhất cho bạn nhé?`,
+      reply: `☕ Hiện tại **AURA COFFEE** có các dòng cà phê tuyển chọn (hỗ trợ để **Nguyên hạt** hoặc **Xay miễn phí 5 cấp độ** theo phin/máy của bạn):\n\n${summaryLines}\n\nBạn thường thích uống **pha Phin đậm đà (đen đá/sữa đá)**, **pha Máy Espresso**, vị **thơm thanh nhẹ nhàng** hay tìm **Hộp quà biếu** để mình chọn đúng loại hợp gu nhất cho bạn nhé?`,
       intent: 'recommendation',
       recommendedProducts: displayProducts.slice(0, 4),
       suggestions: [
@@ -439,7 +637,7 @@ export async function handleBaristaChat(
   const bestChunk = ragSearchResult.topChunks[0];
   if (bestChunk && bestChunk.score >= 0.35 && q.length >= 6) {
     return {
-      reply: `💡 Theo thông tin từ hệ thống tri thức **MỘC Coffee**:\n\n${bestChunk.content}\n\nBạn cần mình tư vấn chi tiết hơn về dòng hạt cà phê nào hay kiểm tra đơn hàng không ạ?`,
+      reply: `💡 Theo thông tin từ hệ thống tri thức **AURA COFFEE**:\n\n${bestChunk.content}\n\nBạn cần mình tư vấn chi tiết hơn về dòng hạt cà phê nào hay kiểm tra đơn hàng không ạ?`,
       intent: 'general',
       recommendedProducts:
         ragMatchedProducts.length > 0 ? ragMatchedProducts.slice(0, 2) : products.slice(0, 2),
@@ -455,14 +653,14 @@ export async function handleBaristaChat(
   // 8. Lời chào hoặc phản hồi mặc định thân thiện kèm gợi ý thông minh
   const greetingName = customer ? ` **${customer.full_name}**` : '';
   return {
-    reply: `Xin chào${greetingName}! 👋 Mình là **Trợ lý Barista AI của MỘC Coffee** (vận hành trên nền tảng **RAG Vector DB + Cloudflare Workers AI**).\n\nMình có thể giúp bạn:\n• ☕ **Tư vấn chọn hạt cà phê** hợp gu (Pha Phin truyền thống, Sữa đá, Pha máy Espresso, Pour Over V60 hay Cold Brew).\n• 🛡️ **Giải đáp Quyền lợi, Lợi thế & Chính sách** (Xay miễn phí 5 cấp độ, Freeship từ 500k, Đồng kiểm COD, Đổi mới 7 ngày).\n• 📦 **Tra cứu trạng thái đơn hàng** tức thì bằng Số điện thoại hoặc Mã đơn.\n\nHôm nay bạn đang tìm hương vị cà phê như thế nào ạ?`,
+    reply: `Xin chào${greetingName}! 👋 Mình là **Trợ lý Barista AI của AURA COFFEE** (vận hành trên nền tảng **RAG Vector DB + Cloudflare Workers AI**).\n\nMình có thể giúp bạn:\n• ☕ **Tư vấn chọn hạt cà phê** hợp gu (Pha Phin truyền thống, Sữa đá, Pha máy Espresso, Pour Over V60 hay Cold Brew).\n• 🛡️ **Giải đáp Quyền lợi, Lợi thế & Chính sách** (Xay miễn phí 5 cấp độ, Freeship từ 500k, Đồng kiểm COD, Đổi mới 7 ngày).\n• 📦 **Tra cứu trạng thái đơn hàng** tức thì bằng Số điện thoại hoặc Mã đơn.\n\nHôm nay bạn đang tìm hương vị cà phê như thế nào ạ?`,
     intent: 'greeting',
     recommendedProducts: products.slice(0, 2),
     suggestions: [
       '🫖 Tư vấn cà phê pha Phin đậm đà',
       '🌸 Cà phê Arabica thơm hương hoa quả',
       '🛡️ Quyền lợi & Chính sách đổi trả',
-      '🌟 Lợi thế cà phê rang mộc MỘC Coffee',
+      '🌟 Lợi thế cà phê rang mộc AURA COFFEE',
       '📦 Kiểm tra đơn hàng của tôi',
     ],
     rag: buildRagTrace(synthModelName),

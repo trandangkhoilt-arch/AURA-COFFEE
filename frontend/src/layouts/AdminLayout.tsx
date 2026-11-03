@@ -51,7 +51,7 @@ export function AdminLayout() {
     return <Navigate to="/account" replace />;
   }
 
-  const currentUserEmail = data?.user?.email || customer?.email || 'admin@moccoffee.vn';
+  const currentUserEmail = data?.user?.email || customer?.email || 'Email quản trị chưa cập nhật';
 
   const handleLogout = async () => {
     try {
@@ -70,7 +70,7 @@ export function AdminLayout() {
       {/* Mobile Top Header */}
       <div className="lg:hidden bg-[#171512] text-[#FFFDF9] px-4 h-14 flex items-center justify-between shrink-0 border-b border-white/10 z-20">
         <Link to="/admin" className="font-serif-display font-bold text-lg tracking-wide">
-          MỘC <span className="text-[#E5B287] font-normal">Admin</span>
+          AURA <span className="text-[#E5B287] font-normal">Admin</span>
         </Link>
         <button
           type="button"
@@ -103,7 +103,7 @@ export function AdminLayout() {
         <div className="p-5 sm:p-6 border-b border-white/10 shrink-0">
           <div className="flex items-center justify-between">
             <Link to="/admin" className="font-serif-display text-2xl font-bold text-[#FFFDF9] tracking-wide inline-block">
-              MỘC <span className="text-[#E5B287] font-normal">Admin</span>
+              AURA <span className="text-[#E5B287] font-normal">Admin</span>
             </Link>
             <button
               type="button"

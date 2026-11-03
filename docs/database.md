@@ -1,4 +1,4 @@
-# Thiết Kế Cơ Sở Dữ Liệu Cloudflare D1 — MỘC Coffee
+# Thiết Kế Cơ Sở Dữ Liệu Cloudflare D1 — AURA COFFEE
 
 Hệ thống sử dụng **Cloudflare D1 (SQLite)** với 15 bảng dữ liệu có ràng buộc khóa chính, khóa ngoại, ràng buộc duy nhất (`UNIQUE`) và chỉ mục (`INDEX`) tối ưu cho truy vấn thương mại điện tử.
 

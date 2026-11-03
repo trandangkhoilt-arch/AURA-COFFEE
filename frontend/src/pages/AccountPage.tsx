@@ -359,7 +359,7 @@ export default function AccountPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <p className="text-xs uppercase tracking-[0.2em] text-[#A65F3B] font-semibold mb-2">
-            TÀI KHOẢN KHÁCH HÀNG MỘC COFFEE
+            TÀI KHOẢN KHÁCH HÀNG AURA COFFEE
           </p>
           <h1 className="font-serif-display text-3xl sm:text-4xl font-bold text-[#171512]">
             Quản Lý Đơn Hàng &amp; Ưu Đãi Thành Viên
@@ -611,7 +611,7 @@ export default function AccountPage() {
           <div className="lg:col-span-5 space-y-5">
             <div className="bg-[#FFFDF9] border border-[#E6DED3] rounded-lg p-6 space-y-4">
               <h2 className="font-serif-display text-xl font-bold text-[#171512]">
-                Quyền lợi Tài khoản MỘC Coffee
+                Quyền lợi Tài khoản AURA COFFEE
               </h2>
               <ul className="space-y-3 text-xs sm:text-sm text-[#777067]">
                 <li className="flex items-start gap-2.5">
@@ -642,7 +642,7 @@ export default function AccountPage() {
                   Tra cứu nhanh bằng Mã đơn / SĐT
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
-                <span className="text-[#777067]">Hỗ trợ: 1900 6868</span>
+                <span className="text-[#777067]">Hỗ trợ: [Cập nhật số điện thoại]</span>
               </div>
             </div>
 
@@ -730,7 +730,7 @@ export default function AccountPage() {
                   </span>
                 ) : (
                   <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#183B2D]/10 text-[#183B2D]">
-                    Thành viên MỘC
+                    Thành viên AURA
                   </span>
                 )}
               </div>
@@ -1021,7 +1021,7 @@ export default function AccountPage() {
                   </h3>
                   <p className="text-xs sm:text-sm text-[#777067] mb-5 max-w-md mx-auto">
                     {statusFilter === 'all'
-                      ? 'Bạn chưa có đơn hàng nào được ghi nhận. Hãy khám phá các dòng cà phê rang mộc tươi mới của MỘC Coffee nhé!'
+                      ? 'Bạn chưa có đơn hàng nào được ghi nhận. Hãy khám phá những dòng cà phê tuyển chọn của AURA COFFEE nhé!'
                       : 'Không có đơn hàng nào ở trạng thái này.'}
                   </p>
                   <Link
@@ -1147,7 +1147,7 @@ export default function AccountPage() {
                   Thông Tin Cá Nhân &amp; Địa Chỉ Nhận Hàng Mặc Định
                 </h2>
                 <p className="text-xs text-[#777067] mt-1">
-                  Thông tin này sẽ được tự động điền sẵn mỗi khi bạn đặt hàng tại MỘC Coffee.
+                  Thông tin này sẽ được tự động điền sẵn mỗi khi bạn đặt hàng tại AURA COFFEE.
                 </p>
               </div>
 

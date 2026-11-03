@@ -1,4 +1,4 @@
-# Tài Liệu API — MỘC Coffee (`/api/v1`)
+# Tài Liệu API — AURA COFFEE (`/api/v1`)
 
 Tất cả các endpoint đều trả về định dạng JSON nhất quán:
 

@@ -1,12 +1,12 @@
-# MỘC Coffee — Hương Vị Việt. Đánh Thức Đam Mê.
+# AURA COFFEE — Đậm vị nguyên bản – Trọn từng khoảnh khắc.
 
 Website thương mại điện tử cà phê đặc sản Việt Nam hoàn chỉnh (Full-Stack), được xây dựng tối ưu cho cả **Laptop** và **Mobile**, vận hành trên hạ tầng **Cloudflare Workers + HonoJS + Cloudflare D1 (SQLite) + Cloudflare Workers KV + ReactJS + TypeScript**.
 
 ---
 
 ## 1. Tổng Quan & Định Vị Thương Hiệu
-- **Thương hiệu**: **MỘC Coffee**
-- **Slogan**: *"Hương Vị Việt. Đánh Thức Đam Mê."*
+- **Thương hiệu**: **AURA COFFEE**
+- **Slogan**: *"Đậm vị nguyên bản – Trọn từng khoảnh khắc."*
 - **Vùng nguyên liệu**: Buôn Ma Thuột (Đắk Lắk), Cầu Đất (Đà Lạt), Tây Nguyên & Sơn La.
 - **Phong cách thiết kế**: Premium Editorial, ấm áp, tự nhiên, sử dụng bảng màu Cream (`#F7F2EA`), Warm White (`#FFFDF9`), Coffee Brown (`#4A2E24`), Caramel (`#A65F3B`), Dark Green (`#183B2D`) và Charcoal (`#171512`), kết hợp bộ font tiếng Việt `Playfair Display` và `Be Vietnam Pro`.
 
@@ -105,6 +105,7 @@ moc-coffee/
    npm run dev
    ```
    Truy cập địa chỉ hiển thị trên terminal (mặc định `http://localhost:5173`).
+   Chatbot local ưu tiên Ollama tại `http://127.0.0.1:11434` với model `qwen2.5:3b`. Đảm bảo Ollama đang chạy và model đã tải về (`ollama pull qwen2.5:3b`). Có thể đổi `OLLAMA_BASE_URL` hoặc `OLLAMA_MODEL` trong `.env.local` ở thư mục gốc; khởi động lại Vite sau khi đổi. Tra cứu đơn hàng, liệt kê sản phẩm, hỏi chi tiết một sản phẩm, chính sách, cách pha và thông tin thương hiệu dùng câu trả lời trực tiếp để giảm thời gian chờ; hội thoại mở vẫn do Ollama sinh và có thể phụ thuộc tốc độ máy. Giới hạn độ dài câu trả lời Ollama giúp giảm thời gian sinh. Dữ liệu sản phẩm, danh mục, banner, nội dung CMS, vận chuyển và bài blog được nạp từ D1; nội dung thay đổi trong Admin dùng ở lượt chat tiếp theo. Nếu Ollama không khả dụng, hệ thống lần lượt thử Workers AI/Gemini (nếu đã cấu hình), rồi mới dùng câu trả lời dự phòng. Ollama chỉ được gọi từ middleware backend, không từ trình duyệt. Khi triển khai Cloudflare, dùng Workers AI binding; endpoint Ollama local trên máy bạn không thể được truy cập từ production.
 
 4. **Thông tin đăng nhập Admin tại môi trường Local Development:**
    - Đường dẫn: `/admin/login`

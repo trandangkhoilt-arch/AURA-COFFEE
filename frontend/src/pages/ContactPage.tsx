@@ -9,14 +9,14 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitted(true);
-    showToast('Cảm ơn bạn! Đội ngũ MỘC Coffee sẽ phản hồi trong vòng 24 giờ làm việc.');
+    showToast('Cảm ơn bạn! Đội ngũ AURA COFFEE sẽ phản hồi trong vòng 24 giờ làm việc.');
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="max-w-2xl mb-10">
         <p className="text-xs uppercase tracking-[0.2em] text-[#A65F3B] font-semibold mb-2">
-          KẾT NỐI CÙNG MỘC COFFEE
+          KẾT NỐI CÙNG AURA COFFEE
         </p>
         <h1 className="font-serif-display text-3xl sm:text-4xl font-bold text-[#171512]">
           Liên Hệ &amp; Hợp Tác Cung Cấp Cà Phê
@@ -36,7 +36,7 @@ export default function ContactPage() {
               <div>
                 <strong className="block text-[#FFFDF9]">Xưởng rang &amp; Văn phòng:</strong>
                 <span className="text-[#F7F2EA]/80 text-xs">
-                  Buôn Ma Thuột, Tỉnh Đắk Lắk &amp; Quận 1, TP. Hồ Chí Minh
+                  [Cập nhật địa chỉ văn phòng/xưởng rang]
                 </span>
               </div>
             </div>
@@ -45,7 +45,7 @@ export default function ContactPage() {
               <Phone className="w-5 h-5 text-[#E5B287] shrink-0 mt-0.5" />
               <div>
                 <strong className="block text-[#FFFDF9]">Hotline CSKH:</strong>
-                <span className="text-[#F7F2EA]/80 text-xs">0901 234 567 (8:00 – 20:00)</span>
+                <span className="text-[#F7F2EA]/80 text-xs">[Cập nhật số điện thoại liên hệ]</span>
               </div>
             </div>
 
@@ -53,7 +53,7 @@ export default function ContactPage() {
               <Mail className="w-5 h-5 text-[#E5B287] shrink-0 mt-0.5" />
               <div>
                 <strong className="block text-[#FFFDF9]">Email:</strong>
-                <span className="text-[#F7F2EA]/80 text-xs">xin-chao@moccoffee.vn</span>
+                <span className="text-[#F7F2EA]/80 text-xs">[Cập nhật email liên hệ]</span>
               </div>
             </div>
 
@@ -61,7 +61,7 @@ export default function ContactPage() {
               <Clock className="w-5 h-5 text-[#E5B287] shrink-0 mt-0.5" />
               <div>
                 <strong className="block text-[#FFFDF9]">Thời gian làm việc:</strong>
-                <span className="text-[#F7F2EA]/80 text-xs">Thứ Hai – Thứ Bảy: 08:00 – 18:00</span>
+                <span className="text-[#F7F2EA]/80 text-xs">[Cập nhật thời gian làm việc]</span>
               </div>
             </div>
           </div>
@@ -69,13 +69,13 @@ export default function ContactPage() {
 
         <div className="lg:col-span-7 bg-[#FFFDF9] border border-[#E6DED3] rounded-lg p-6 sm:p-8">
           <h2 className="font-serif-display text-2xl font-bold text-[#171512] mb-5">
-            Gửi Lời Nhắn Cho MỘC
+            Gửi Lời Nhắn Cho AURA COFFEE
           </h2>
           {submitted ? (
             <div className="p-6 rounded bg-[#F7F2EA] border border-[#E6DED3] text-center">
               <p className="font-semibold text-[#183B2D] mb-1">Đã nhận thông tin liên hệ!</p>
               <p className="text-xs text-[#777067]">
-                Cảm ơn bạn đã quan tâm đến MỘC Coffee. Chúng tôi sẽ liên hệ lại sớm nhất.
+                Cảm ơn bạn đã quan tâm đến AURA COFFEE. Chúng tôi sẽ liên hệ lại sớm nhất.
               </p>
             </div>
           ) : (

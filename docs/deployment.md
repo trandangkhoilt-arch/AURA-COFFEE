@@ -1,4 +1,4 @@
-# Quy Trình Triển Khai Lên Cloudflare (21 Bước Đầy Đủ) — MỘC Coffee
+# Quy Trình Triển Khai Lên Cloudflare (21 Bước Đầy Đủ) — AURA COFFEE
 
 Tài liệu này hướng dẫn từng bước từ cài đặt môi trường Local cho đến khi triển khai hoàn chỉnh lên hạ tầng **Cloudflare Workers + D1 + Workers KV** mà không phụ thuộc vào máy tính cá nhân sau khi deploy.
 

@@ -118,7 +118,7 @@ export default function AdminCustomersPage() {
             </span>
           </div>
           <p className="text-xs sm:text-sm text-[#777067]">
-            Theo dõi chi tiết hồ sơ tài khoản, lịch sử mua hàng và quản lý trạng thái hội viên MỘC Coffee.
+            Theo dõi chi tiết hồ sơ tài khoản, lịch sử mua hàng và quản lý trạng thái hội viên AURA COFFEE.
           </p>
         </div>
 

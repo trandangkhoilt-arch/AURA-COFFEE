@@ -46,8 +46,8 @@ export default function HomePage() {
     try {
       const res = await api.subscribeNewsletter(trimmed, honeypot);
       const msg = res.alreadySubscribed
-        ? 'Email này đã có trong danh sách Hội Yêu Cà Phê MỘC!'
-        : 'Đăng ký thành công! Cảm ơn bạn đã gia nhập Hội Yêu Cà Phê MỘC.';
+        ? 'Email này đã có trong danh sách cộng đồng AURA COFFEE!'
+        : 'Đăng ký thành công! Cảm ơn bạn đã đồng hành cùng AURA COFFEE.';
       setNewsletterMsg({ type: 'success', text: msg });
       showToast(msg, 'success');
       setEmail('');
@@ -72,7 +72,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <img
             src="/images/hero-bg.png"
-            alt="MỘC Coffee — Hương Vị Việt. Đánh Thức Đam Mê."
+            alt="AURA COFFEE — Đậm vị nguyên bản – Trọn từng khoảnh khắc."
             className="w-full h-full object-cover object-center sm:object-right"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#171512]/95 via-[#171512]/75 to-[#171512]/25 lg:via-[#171512]/55 lg:to-transparent" />
@@ -84,24 +84,24 @@ export default function HomePage() {
           aria-hidden="true"
           className="hidden xl:block absolute top-28 right-12 z-10 text-right font-handwriting text-3xl leading-tight text-[#F7F2EA]/75 -rotate-6 select-none pointer-events-none"
         >
-          <p>Hạt Mộc</p>
-          <p>Vị Nguyên Bản</p>
-          <p>Tâm Người Việt</p>
+          <p>AURA COFFEE</p>
+          <p>Vị nguyên bản</p>
+          <p>Trọn khoảnh khắc</p>
         </div>
 
         {/* Main Hero Content */}
         <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-36 pb-12">
           <div className="max-w-xl">
             <p className="text-xs sm:text-sm uppercase tracking-[0.25em] text-[#E5B287] font-medium mb-4">
-              GOOD COFFEE, BETTER DAYS
+              AURA COFFEE · CÀ PHÊ TUYỂN CHỌN
             </p>
 
             <h1 className="font-serif-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.12] tracking-tight text-[#FFFDF9]">
-              Hương Vị Việt.
+              Đậm vị
               <br />
-              Đánh Thức
+              nguyên bản –
               <br />
-              <span className="text-[#E5B287]">Đam Mê.</span>
+              <span className="text-[#E5B287]">Trọn từng khoảnh khắc.</span>
             </h1>
 
             <p className="mt-5 text-sm sm:text-base text-[#F7F2EA]/85 leading-relaxed max-w-lg">
@@ -251,7 +251,7 @@ export default function HomePage() {
           <div className="lg:col-span-8 relative grid grid-cols-1 md:grid-cols-12 bg-[#F3ECE1]">
             <div className="md:col-span-6 p-6 sm:p-10 flex flex-col justify-center z-10">
               <p className="text-xs uppercase tracking-[0.2em] text-[#777067] font-semibold mb-2">
-                CÂU CHUYỆN MỘC COFFEE
+                CÂU CHUYỆN AURA COFFEE
               </p>
               <h2 className="font-serif-display text-2xl sm:text-3xl lg:text-4xl font-bold text-[#171512] leading-tight">
                 Từ Đất Việt,
@@ -398,7 +398,7 @@ export default function HomePage() {
       <section className="relative bg-[#183B2D] text-[#FFFDF9] overflow-hidden">
         <img
           src="/images/newsletter-leaves.png"
-          alt="Lá cà phê MỘC Coffee"
+          alt="Lá cà phê trang trí cho AURA COFFEE"
           loading="lazy"
           className="absolute inset-0 w-full h-full object-cover opacity-35"
         />
@@ -411,7 +411,7 @@ export default function HomePage() {
                 Gia Nhập Hội Yêu Cà Phê
               </h2>
               <p className="text-xs sm:text-sm text-[#F7F2EA]/80 mt-1.5">
-                Nhận ưu đãi đặc biệt, câu chuyện cà phê và những sản phẩm mới nhất từ MỘC.
+                Nhận ưu đãi đặc biệt, câu chuyện cà phê và sản phẩm mới nhất từ AURA COFFEE.
               </p>
             </div>
 

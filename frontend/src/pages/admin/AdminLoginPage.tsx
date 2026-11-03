@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
           className="inline-flex items-center gap-1.5 text-xs text-[#E5B287] hover:underline mb-6"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
-          Quay về trang chủ MỘC Coffee
+          Quay về trang chủ AURA COFFEE
         </Link>
 
         <div className="bg-[#FFFDF9] border border-[#E6DED3] rounded-lg p-6 sm:p-8 shadow-xl">
@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
             </div>
             <div>
               <h1 className="font-serif-display text-2xl font-bold text-[#171512]">
-                Quản Trị MỘC Coffee
+                Quản Trị AURA COFFEE
               </h1>
               <p className="text-xs text-[#777067]">
                 Xác thực phiên làm việc bảo mật qua Cloudflare D1

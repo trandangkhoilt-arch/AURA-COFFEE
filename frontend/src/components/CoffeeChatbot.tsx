@@ -39,7 +39,7 @@ const DEFAULT_SUGGESTIONS = [
   '🫖 Tư vấn cà phê pha Phin đậm đà',
   '🌸 Cà phê Arabica thơm hương hoa quả',
   '🎁 Quyền lợi khách hàng & Đổi trả 7 ngày',
-  '🏆 Lợi thế cạnh tranh của MỘC Coffee',
+  '🏆 Khám phá AURA COFFEE',
   '📖 Hướng dẫn pha Phin chuẩn vị',
   '📦 Kiểm tra đơn hàng của tôi',
 ];
@@ -97,7 +97,7 @@ export function CoffeeChatbot() {
   const getInitialGreeting = (name?: string): UIMessage => ({
     id: 'welcome-msg',
     role: 'assistant',
-    content: `Xin chào${name ? ` **${name}**` : ''}! 👋 Mình là **Trợ lý Barista MỘC Coffee**.\n\nBạn đang muốn tìm **hạt cà phê hợp gu** (Pha Phin, Sữa đá, Pha máy, Cold Brew), xem **công thức pha chế**, hay **tra cứu đơn hàng** ạ?`,
+    content: `Xin chào${name ? ` **${name}**` : ''}! 👋 Mình là **Trợ lý Barista AURA COFFEE**.\n\nBạn đang muốn tìm **hạt cà phê hợp gu** (Pha Phin, Sữa đá, Pha máy, Cold Brew), xem **công thức pha chế**, hay **tra cứu đơn hàng** ạ?`,
     timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
   });
 
@@ -214,7 +214,7 @@ export function CoffeeChatbot() {
         <div
           className="mb-3 w-[calc(100vw-2.5rem)] sm:w-[400px] h-[580px] max-h-[80vh] bg-[#FFFDF9] border border-[#E6DED3] rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
           role="dialog"
-          aria-label="Trợ lý Barista MỘC Coffee"
+          aria-label="Trợ lý Barista AURA COFFEE"
         >
           {/* Header */}
           <div className="bg-[#171512] text-[#FFFDF9] px-4 py-3.5 flex items-center justify-between border-b border-white/10">
@@ -226,7 +226,7 @@ export function CoffeeChatbot() {
               <div>
                 <div className="flex items-center gap-1.5">
                   <h3 className="font-serif font-semibold text-base tracking-wide text-[#FFFDF9]">
-                    Barista MỘC Coffee
+                    Barista AURA COFFEE
                   </h3>
                   <Sparkles className="w-3.5 h-3.5 text-[#D89B6C]" />
                 </div>
@@ -466,7 +466,7 @@ export function CoffeeChatbot() {
         onClick={() => setIsOpen((prev) => !prev)}
         className="group relative w-14 h-14 rounded-full bg-[#171512] hover:bg-[#4A2E24] text-[#FFFDF9] shadow-2xl border border-[#A65F3B]/50 flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer"
         aria-label={isOpen ? 'Đóng trợ lý Barista' : 'Mở trợ lý Barista Chatbot'}
-        title="Chat với Barista MỘC Coffee"
+        title="Chat với Barista AURA COFFEE"
       >
         {isOpen ? (
           <X className="w-6 h-6 text-[#D89B6C] transition-transform duration-200" />

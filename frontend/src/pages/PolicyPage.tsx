@@ -5,7 +5,7 @@ const POLICIES: Record<string, { title: string; content: string }> = {
   'chinh-sach-giao-hang': {
     title: 'Chính Sách Giao Hàng',
     content: `1. Phạm vi áp dụng:
-MỘC Coffee hỗ trợ giao hàng tận nơi trên toàn quốc thông qua các đối tác vận chuyển tiêu chuẩn.
+AURA COFFEE hỗ trợ giao hàng tận nơi trên toàn quốc thông qua các đối tác vận chuyển tiêu chuẩn.
 
 2. Thời gian xử lý & giao hàng dự kiến:
 - Đơn hàng được xác nhận và đóng gói trong vòng 24 giờ làm việc.
@@ -20,7 +20,7 @@ MỘC Coffee hỗ trợ giao hàng tận nơi trên toàn quốc thông qua các
   'chinh-sach-doi-tra': {
     title: 'Chính Sách Đổi Trả & Hoàn Tiền',
     content: `1. Điều kiện hỗ trợ đổi trả:
-Quý khách được kiểm tra ngoại quan gói hàng khi nhận (COD). MỘC Coffee hỗ trợ đổi mới 100% trong vòng 7 ngày kể từ ngày nhận hàng nếu:
+Quý khách được kiểm tra ngoại quan gói hàng khi nhận (COD). AURA COFFEE hỗ trợ đổi mới 100% trong vòng 7 ngày kể từ ngày nhận hàng nếu:
 - Sản phẩm bị rách bao bì, hở van hoặc hư hỏng trong quá trình vận chuyển.
 - Giao sai dòng sản phẩm, sai khối lượng hoặc sai kiểu xay so với đơn đặt hàng.
 
@@ -30,7 +30,7 @@ Quý khách được kiểm tra ngoại quan gói hàng khi nhận (COD). MỘC 
   'chinh-sach-bao-mat': {
     title: 'Chính Sách Bảo Mật Thông Tin',
     content: `1. Mục đích thu thập thông tin:
-MỘC Coffee chỉ thu thập họ tên, số điện thoại, địa chỉ giao hàng và email (nếu có) nhằm mục đích xử lý đơn đặt hàng, giao nhận sản phẩm và tra cứu lịch sử đơn hàng.
+AURA COFFEE chỉ thu thập họ tên, số điện thoại, địa chỉ giao hàng và email (nếu có) nhằm mục đích xử lý đơn đặt hàng, giao nhận sản phẩm và tra cứu lịch sử đơn hàng.
 
 2. Cam kết bảo mật:
 - Dữ liệu đơn hàng được lưu trữ an toàn trên hạ tầng cơ sở dữ liệu Cloudflare D1.

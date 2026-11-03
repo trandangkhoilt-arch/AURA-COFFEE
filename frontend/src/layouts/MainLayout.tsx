@@ -93,10 +93,10 @@ export function MainLayout() {
             </span>
             <div className="flex items-baseline gap-1.5">
               <span className="font-serif-display text-xl sm:text-2xl font-bold tracking-tight text-[#FFFDF9]">
-                MỘC
+                AURA
               </span>
-              <span className="font-serif-display text-lg sm:text-xl font-normal text-[#E5B287]">
-                Coffee
+              <span className="text-[9px] sm:text-[10px] font-semibold tracking-[0.22em] text-[#E5B287]">
+                COFFEE
               </span>
             </div>
           </Link>
@@ -251,7 +251,7 @@ export function MainLayout() {
           <div className="bg-[#FFFDF9] border border-[#E6DED3] rounded-lg max-w-lg w-full p-5 shadow-xl">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-serif-display text-lg font-semibold text-[#171512]">
-                Tìm kiếm sản phẩm MỘC Coffee
+                Tìm kiếm sản phẩm AURA COFFEE
               </h2>
               <button
                 type="button"
@@ -446,14 +446,14 @@ export function MainLayout() {
                   </svg>
                 </span>
                 <span className="font-serif-display text-xl font-bold text-[#FFFDF9]">
-                  MỘC <span className="font-normal text-[#E5B287]">Coffee</span>
+                  AURA <span className="font-normal text-[#E5B287]">COFFEE</span>
                 </span>
               </Link>
               <p className="text-xs text-[#F7F2EA]/70 leading-relaxed">
-                Hương Vị Việt. Đánh Thức Đam Mê.
+                Đậm vị nguyên bản – Trọn từng khoảnh khắc.
               </p>
               <p className="text-xs text-[#F7F2EA]/60 leading-relaxed">
-                Xưởng rang: Buôn Ma Thuột, Đắk Lắk &amp; Showroom Quận 1, TP. Hồ Chí Minh.
+                Địa chỉ: [Cập nhật địa chỉ doanh nghiệp]
               </p>
               <div className="flex items-center gap-3 pt-2 text-[#F7F2EA]/70">
                 <a
@@ -520,10 +520,10 @@ export function MainLayout() {
               </ul>
             </div>
 
-            {/* Col 3: Về MỘC Coffee */}
+            {/* Col 3: Về AURA COFFEE */}
             <div>
               <h3 className="text-xs font-semibold uppercase tracking-wider text-[#FFFDF9] mb-4">
-                Về MỘC Coffee
+                Về AURA COFFEE
               </h3>
               <ul className="space-y-2.5 text-xs text-[#F7F2EA]/70">
                 <li>
@@ -589,7 +589,7 @@ export function MainLayout() {
                 </p>
               </div>
               <p className="text-[11px] text-[#F7F2EA]/50 mt-6 lg:mt-0">
-                © {new Date().getFullYear()} MỘC Coffee. Bảo lưu mọi quyền.
+                © {new Date().getFullYear()} AURA COFFEE. Bảo lưu mọi quyền.
               </p>
             </div>
           </div>

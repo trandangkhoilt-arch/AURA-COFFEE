@@ -1,5 +1,5 @@
 -- ============================================================================
--- MỘC COFFEE — DEVELOPMENT SEED DATA (Cloudflare D1)
+-- AURA COFFEE — DEVELOPMENT SEED DATA (Cloudflare D1)
 -- Chỉ sử dụng cho môi trường Development / Demo. Không ghi đè dữ liệu Production.
 -- ============================================================================
 
@@ -57,7 +57,7 @@ VALUES
     'Phối trộn truyền thống 70/30',
     'Cân bằng • Caramel • Thơm nồng nàn',
     'Tỷ lệ vàng 70% Robusta Buôn Ma Thuột và 30% Arabica Cầu Đất, mang lại tách cà phê phin hài hòa cả hương lẫn vị.',
-    'Blend Phin Việt được đội ngũ thợ rang MỘC Coffee nghiên cứu dành riêng cho phin truyền thống Việt Nam. Sự kết hợp giữa độ đậm mạnh mẽ của Robusta Đắk Lắk và hương thơm quyến rũ của Arabica Cầu Đất tạo nên giọt cà phê sánh quyện, thơm nồng hương caramel cháy và bơ hạt.',
+    'Blend Phin Việt được tuyển chọn dành riêng cho phin truyền thống Việt Nam. Sự kết hợp giữa độ đậm mạnh mẽ của Robusta Đắk Lắk và hương thơm quyến rũ của Arabica Cầu Đất tạo nên giọt cà phê sánh quyện, thơm nồng hương caramel cháy và bơ hạt.',
     165000, NULL, 110, 250, '#171512', 'Chuẩn gu Phin',
     1, 1, 4.9, 215, '/images/product-ethiopia.png'
   ),
@@ -127,7 +127,7 @@ VALUES
     'Tuyển chọn 3 dòng cà phê tiêu biểu',
     'Sang trọng • Đậm bản sắc • Quà tặng ý nghĩa',
     'Bộ sưu tập gồm 3 gói 250g (Robusta Buôn Ma Thuột, Arabica Cầu Đất, Blend Phin Việt) kèm phin nhôm cao cấp.',
-    'Món quà tinh tế dành tặng đối tác, khách hàng và người thân yêu cà phê. Hộp giấy mỹ thuật thân thiện môi trường kèm cẩm nang hướng dẫn pha chế chi tiết từ MỘC Coffee.',
+    'Món quà tinh tế dành tặng đối tác, khách hàng và người thân yêu cà phê. Hộp giấy mỹ thuật thân thiện môi trường kèm cẩm nang hướng dẫn pha chế chi tiết từ AURA COFFEE.',
     490000, 445000, 30, 750, '#4A2E24', 'Quà tặng cao cấp',
     0, 1, 5.0, 62, '/images/product-sumatra.png'
   );
@@ -169,14 +169,14 @@ INSERT OR IGNORE INTO site_content (section_key, title, subtitle, content_json)
 VALUES
   (
     'hero_section',
-    'Hương Vị Việt. Đánh Thức Đam Mê.',
-    'Từ những vùng nguyên liệu trù phú đến tách cà phê mỗi sáng — chọn hương vị dành riêng cho bạn.',
-    '{"eyebrow":"GOOD COFFEE, BETTER DAYS","primaryCta":"Khám phá cà phê","secondaryCta":"Câu chuyện của chúng tôi","advantages":["Nguồn gốc minh bạch","Giao hàng toàn quốc","Rang mới mỗi ngày","Hướng đến phát triển bền vững"]}'
+    'Đậm vị nguyên bản – Trọn từng khoảnh khắc.',
+    'Khám phá những dòng cà phê tuyển chọn và tìm hương vị dành riêng cho bạn.',
+    '{"eyebrow":"AURA COFFEE · CÀ PHÊ TUYỂN CHỌN","primaryCta":"Khám phá cà phê","secondaryCta":"Câu chuyện của chúng tôi","advantages":["Nguồn gốc minh bạch","Giao hàng toàn quốc","Rang mới mỗi ngày","Hướng đến phát triển bền vững"]}'
   ),
   (
     'story_section',
     'Từ Đất Việt, Đến Tách Cà Phê Mỗi Ngày.',
-    'MỘC Coffee khởi nguồn từ niềm trân quý hạt cà phê bản địa Việt Nam — nơi đất đỏ bazan Tây Nguyên và sương mù Cầu Đất kết tinh trong từng mẻ rang mộc chuẩn xác.',
+    'AURA COFFEE trân trọng hạt cà phê bản địa Việt Nam — nơi đất đỏ bazan Tây Nguyên và sương mù Cầu Đất kết tinh trong từng mẻ rang mộc.',
     '{"ctaText":"Tìm hiểu hành trình","values":[{"title":"Tôn trọng người trồng","desc":"Hợp tác trực tiếp và minh bạch thông tin vùng trồng tại Đắk Lắk, Lâm Đồng."},{"title":"Chú trọng chất lượng","desc":"Rang mộc 100% theo mẻ nhỏ, ghi nhận hồ sơ nhiệt độ rõ ràng cho từng dòng hạt."},{"title":"Hạn chế tác động môi trường","desc":"Sử dụng bao bì giấy Kraft dễ phân hủy và khuyến khích tái sử dụng hũ đựng tại nhà."}]}'
   ),
   (
@@ -205,7 +205,7 @@ VALUES
     'Hoàng Nam T.',
     'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=80',
     5,
-    'Arabica Cầu Đất của MỘC pha V60 lên hương cam thảo và hoa trắng rất rõ. Bao bì giấy Kraft chỉn chu, có van 1 chiều bảo quản hạt tốt.',
+    'Arabica Cầu Đất pha V60 lên hương cam thảo và hoa trắng rất rõ. Bao bì giấy Kraft chỉn chu, có van 1 chiều bảo quản hạt tốt.',
     'Arabica Cầu Đất',
     1, 1, 1
   ),

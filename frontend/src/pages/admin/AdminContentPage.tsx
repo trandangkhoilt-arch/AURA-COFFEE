@@ -8,9 +8,9 @@ export default function AdminContentPage() {
   const { showToast } = useToast();
   const qc = useQueryClient();
 
-  const [heroTitle, setHeroTitle] = useState('Hương Vị Việt. Đánh Thức Đam Mê.');
+  const [heroTitle, setHeroTitle] = useState('Đậm vị nguyên bản – Trọn từng khoảnh khắc.');
   const [heroSubtitle, setHeroSubtitle] = useState(
-    'Từ những vùng nguyên liệu trù phú đến tách cà phê mỗi sáng — chọn hương vị dành riêng cho bạn.'
+    'Khám phá những dòng cà phê tuyển chọn và tìm hương vị dành riêng cho bạn.'
   );
   const [defaultShippingFee, setDefaultShippingFee] = useState(30000);
   const [freeShippingThreshold, setFreeShippingThreshold] = useState(500000);
@@ -48,7 +48,7 @@ export default function AdminContentPage() {
       await api.updateAdminBanner(1, {
         title: heroTitle,
         subtitle: heroSubtitle,
-        eyebrow: 'GOOD COFFEE, BETTER DAYS',
+        eyebrow: 'AURA COFFEE · CÀ PHÊ TUYỂN CHỌN',
         cta_primary_text: 'Khám phá cà phê',
         cta_primary_link: '/shop',
         cta_secondary_text: 'Câu chuyện của chúng tôi',

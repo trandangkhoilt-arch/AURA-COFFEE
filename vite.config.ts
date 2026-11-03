@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'node:path';
@@ -9,7 +9,7 @@ const backendEntryPath = path.resolve(__dirname, 'backend/src/index.ts');
 
 // Plugin chạy trực tiếp HonoJS Worker (/api/*) từ thư mục backend/ trong môi trường Vite Dev Server
 // đồng thời giữ nguyên cấu trúc output chuẩn `dist/index.html` cho Cloudflare Pages khi build.
-function honoLocalDevPlugin(): Plugin {
+function honoLocalDevPlugin(localEnv: Record<string, string>): Plugin {
   return {
     name: 'hono-local-dev-server',
     configureServer(server) {
@@ -53,6 +53,10 @@ function honoLocalDevPlugin(): Plugin {
             ENVIRONMENT: 'development',
             DEFAULT_SHIPPING_FEE: '30000',
             FREE_SHIPPING_THRESHOLD: '500000',
+            CF_LLM_MODEL: localEnv.CF_LLM_MODEL,
+            GEMINI_API_KEY: localEnv.GEMINI_API_KEY,
+            OLLAMA_BASE_URL: localEnv.OLLAMA_BASE_URL || 'http://127.0.0.1:11434',
+            OLLAMA_MODEL: localEnv.OLLAMA_MODEL || 'qwen2.5:3b',
           });
 
           res.statusCode = webRes.status;
@@ -78,12 +82,16 @@ function honoLocalDevPlugin(): Plugin {
   };
 }
 
-export default defineConfig({
-  root: 'frontend',
-  publicDir: 'public',
-  plugins: [react(), tailwindcss(), honoLocalDevPlugin()],
-  build: {
-    outDir: '../dist',
-    emptyOutDir: true,
-  },
+export default defineConfig(({ mode }) => {
+  const localEnv = loadEnv(mode, __dirname, '');
+
+  return {
+    root: 'frontend',
+    publicDir: 'public',
+    plugins: [react(), tailwindcss(), honoLocalDevPlugin(localEnv)],
+    build: {
+      outDir: '../dist',
+      emptyOutDir: true,
+    },
+  };
 });

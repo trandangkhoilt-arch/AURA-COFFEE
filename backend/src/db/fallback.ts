@@ -143,7 +143,7 @@ const mem: MemoryStore = {
       short_description:
         'Tỷ lệ vàng 70% Robusta Buôn Ma Thuột và 30% Arabica Cầu Đất, mang lại tách cà phê phin hài hòa cả hương lẫn vị.',
       description:
-        'Blend Phin Việt được đội ngũ thợ rang MỘC Coffee nghiên cứu dành riêng cho phin truyền thống Việt Nam. Sự kết hợp giữa độ đậm mạnh mẽ của Robusta Đắk Lắk và hương thơm quyến rũ của Arabica Cầu Đất tạo nên giọt cà phê sánh quyện, thơm nồng hương caramel cháy và bơ hạt.',
+        'Blend Phin Việt được tuyển chọn dành riêng cho phin truyền thống Việt Nam. Sự kết hợp giữa độ đậm mạnh mẽ của Robusta Đắk Lắk và hương thơm quyến rũ của Arabica Cầu Đất tạo nên giọt cà phê sánh quyện, thơm nồng hương caramel cháy và bơ hạt.',
       price: 165000,
       sale_price: null,
       stock: 110,
@@ -283,7 +283,7 @@ const mem: MemoryStore = {
       short_description:
         'Bộ sưu tập gồm 3 gói 250g (Robusta Buôn Ma Thuột, Arabica Cầu Đất, Blend Phin Việt) kèm phin nhôm cao cấp.',
       description:
-        'Món quà tinh tế dành tặng đối tác, khách hàng và người thân yêu cà phê. Hộp giấy mỹ thuật thân thiện môi trường kèm cẩm nang hướng dẫn pha chế chi tiết từ MỘC Coffee.',
+        'Món quà tinh tế dành tặng đối tác, khách hàng và người thân yêu cà phê. Hộp giấy mỹ thuật thân thiện môi trường kèm cẩm nang hướng dẫn pha chế chi tiết từ AURA COFFEE.',
       price: 490000,
       sale_price: 445000,
       stock: 30,
@@ -357,7 +357,7 @@ const mem: MemoryStore = {
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=80',
       rating: 5,
       comment:
-        'Arabica Cầu Đất của MỘC pha V60 lên hương cam thảo và hoa trắng rất rõ. Bao bì giấy Kraft chỉn chu, có van 1 chiều bảo quản hạt tốt.',
+        'Arabica Cầu Đất pha V60 lên hương cam thảo và hoa trắng rất rõ. Bao bì giấy Kraft chỉn chu, có van 1 chiều bảo quản hạt tốt.',
       product_name: 'Arabica Cầu Đất',
       is_verified_purchase: 1,
       is_sample_dev: 1,
@@ -528,7 +528,7 @@ async function ensureMemAdmin() {
         id: 1,
         email: 'admin@moccoffee.vn',
         phone: '0909888999',
-        full_name: 'Quản trị viên MỘC Coffee',
+        full_name: 'Quản trị viên AURA COFFEE',
         password_hash: hash,
         password_salt: salt,
         role: 'admin',
@@ -930,6 +930,11 @@ export function createFallbackD1(): D1Database {
       }
 
       // Categories
+      if (lower.startsWith('select name, slug, description from categories')) {
+        return mem.categories
+          .filter((category) => category.is_active === 1)
+          .map(({ name, slug, description }) => ({ name, slug, description }));
+      }
       if (lower.includes('from categories c')) {
         return mem.categories.map((c) => ({
           ...c,
@@ -950,8 +955,13 @@ export function createFallbackD1(): D1Database {
       }
 
       // Banners & Site Content & Reviews & Blog
+      if (lower.startsWith('select title, subtitle, eyebrow, cta_primary_text')) {
+        return mem.banners
+          .filter((banner) => banner.is_active === 1)
+          .sort((a, b) => a.sort_order - b.sort_order);
+      }
       if (lower.startsWith('select * from banners')) {
-        return mem.banners;
+        return mem.banners.filter((banner) => banner.is_active === 1);
       }
       if (lower.includes('from site_content')) {
         if (lower.includes("section_key = 'shipping_config'")) {
@@ -969,8 +979,14 @@ export function createFallbackD1(): D1Database {
         const b = mem.blog_posts.find((p) => p.slug === bound[0]);
         return b ? [b] : [];
       }
+      if (lower.startsWith('select title, slug, excerpt, content, category, reading_time from blog_posts')) {
+        return mem.blog_posts
+          .filter((post) => post.is_published === 1)
+          .sort((a, b) => b.published_at.localeCompare(a.published_at))
+          .slice(0, 10);
+      }
       if (lower.startsWith('select * from blog_posts')) {
-        return mem.blog_posts;
+        return mem.blog_posts.filter((post) => post.is_published === 1);
       }
       if (lower.startsWith('select * from newsletter_subscribers')) {
         return mem.newsletter_subscribers;
@@ -1209,7 +1225,9 @@ export function createFallbackD1(): D1Database {
         return list;
       }
 
-      if (lower.startsWith('select * from product_variants')) return [];
+      if (lower.includes('from product_variants')) {
+        return mem.product_variants.filter((variant) => variant.is_active === 1);
+      }
       if (lower.startsWith('select * from product_images')) return [];
 
       // Orders & Customer Orders & Dashboard

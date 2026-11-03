@@ -2,7 +2,7 @@
   "name": "moc-coffee",
   "private": true,
   "version": "1.0.0",
-  "description": "MỘC Coffee — Hương Vị Việt. Đánh Thức Đam Mê. Full-stack E-Commerce trên Cloudflare Pages/Workers, HonoJS, D1, Workers KV và ReactJS",
+  "description": "AURA COFFEE — Đậm vị nguyên bản – Trọn từng khoảnh khắc. Full-stack E-Commerce trên Cloudflare Pages/Workers, HonoJS, D1, Workers KV và ReactJS",
   "type": "module",
   "scripts": {
     "dev": "vite",

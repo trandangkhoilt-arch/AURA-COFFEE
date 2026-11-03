@@ -1,7 +1,7 @@
-# Kiến Trúc Hệ Thống — MỘC Coffee
+# Kiến Trúc Hệ Thống — AURA COFFEE
 
 ## 1. Tổng Quan Kiến Trúc
-**MỘC Coffee** được thiết kế theo kiến trúc **Full-Stack Serverless trên nền tảng Cloudflare Edge**, kết hợp:
+**AURA COFFEE** được thiết kế theo kiến trúc **Full-Stack Serverless trên nền tảng Cloudflare Edge**, kết hợp:
 - **Frontend**: React 19 + TypeScript + Vite + Tailwind CSS v4 + React Router v7 + TanStack Query v5 + React Hook Form + Zod.
 - **Backend API**: HonoJS v4 + TypeScript chạy trực tiếp trên **Cloudflare Workers Runtime** (`/api/v1/*`).
 - **Database**: **Cloudflare D1** (SQLite phân tán tại Edge) lưu trữ sản phẩm, danh mục, biến thể, đơn hàng, lịch sử trạng thái, biến động tồn kho, phiên đăng nhập và nội dung website.

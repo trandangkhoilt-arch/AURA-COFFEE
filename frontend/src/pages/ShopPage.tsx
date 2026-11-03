@@ -67,7 +67,7 @@ export default function ShopPage() {
           Cà Phê Rang Mộc Tuyển Chọn
         </h1>
         <p className="text-sm text-[#777067] mt-2 max-w-2xl">
-          Tất cả sản phẩm được rang mới theo mẻ nhỏ tại xưởng MỘC Coffee, đóng gói túi có van 1 chiều và hỗ trợ xay miễn phí theo dụng cụ pha của bạn.
+          Khám phá những dòng cà phê được tuyển chọn kỹ lưỡng, đóng gói giữ hương và hỗ trợ xay theo dụng cụ pha của bạn.
         </p>
       </div>
 

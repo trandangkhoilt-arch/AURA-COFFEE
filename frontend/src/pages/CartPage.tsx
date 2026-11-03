@@ -20,7 +20,7 @@ export default function CartPage() {
             Giỏ hàng của bạn đang trống
           </h1>
           <p className="text-sm text-[#777067] mb-6">
-            Hãy khám phá các dòng cà phê rang mộc đặc trưng từ Buôn Ma Thuột và Cầu Đất của MỘC Coffee.
+            Hãy khám phá những dòng cà phê được tuyển chọn cho gu thưởng thức của bạn tại AURA COFFEE.
           </p>
           <Link
             to="/shop"

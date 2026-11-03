@@ -24,7 +24,7 @@ export default function SearchPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="max-w-2xl mx-auto text-center mb-10">
         <h1 className="font-serif-display text-3xl sm:text-4xl font-bold text-[#171512] mb-3">
-          Tìm Kiếm Cà Phê MỘC
+          Tìm Kiếm Cà Phê AURA
         </h1>
         <p className="text-sm text-[#777067] mb-6">
           Nhập tên hạt cà phê, vùng nguyên liệu (Buôn Ma Thuột, Cầu Đất) hoặc gu hương vị bạn yêu thích.
@@ -78,7 +78,7 @@ export default function SearchPage() {
             Không tìm thấy kết quả cho &ldquo;{initialQ}&rdquo;
           </p>
           <p className="text-sm text-[#777067] mb-5">
-            Bạn có thể tham khảo toàn bộ danh mục sản phẩm của MỘC Coffee tại cửa hàng.
+            Bạn có thể tham khảo toàn bộ danh mục sản phẩm của AURA COFFEE tại cửa hàng.
           </p>
           <Link
             to="/shop"

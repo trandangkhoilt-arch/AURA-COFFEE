@@ -10,7 +10,7 @@ export default function BlogPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
       <div className="max-w-2xl mb-10">
         <p className="text-xs uppercase tracking-[0.2em] text-[#A65F3B] font-semibold mb-2">
-          GÓC CHIA SẺ MỘC COFFEE
+          GÓC CHIA SẺ AURA COFFEE
         </p>
         <h1 className="font-serif-display text-3xl sm:text-4xl font-bold text-[#171512]">
           Cẩm Nang &amp; Văn Hóa Cà Phê Việt

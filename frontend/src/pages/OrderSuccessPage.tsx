@@ -30,7 +30,7 @@ export default function OrderSuccessPage() {
           ĐẶT HÀNG THÀNH CÔNG
         </p>
         <h1 className="font-serif-display text-3xl sm:text-4xl font-bold text-[#171512]">
-          Cảm ơn bạn đã chọn MỘC Coffee!
+          Cảm ơn bạn đã chọn AURA COFFEE!
         </h1>
         <p className="text-sm text-[#777067] mt-2.5 max-w-md mx-auto leading-relaxed">
           Đơn hàng của bạn đã được ghi nhận vào hệ thống và đang chờ bộ phận rang xay xác nhận đóng gói.

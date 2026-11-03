@@ -49,7 +49,7 @@ export default function CategoryPage() {
       <div className="bg-[#183B2D] text-[#FFFDF9] rounded-lg p-6 sm:p-10 mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-[#E5B287] font-semibold mb-2">
-            BỘ SƯU TẬP MỘC COFFEE
+            BỘ SƯU TẬP AURA COFFEE
           </p>
           <h1 className="font-serif-display text-3xl sm:text-4xl font-bold">
             {category.name}

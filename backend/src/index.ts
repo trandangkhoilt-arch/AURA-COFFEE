@@ -101,7 +101,7 @@ app.get('/api/v1/health', async (c) => {
   const dbCheck = await c.env.DB.prepare('SELECT 1 as ok').first<{ ok: number }>();
   return ok(c, {
     status: 'healthy',
-    service: 'MỘC Coffee API (HonoJS on Cloudflare Workers)',
+    service: 'AURA COFFEE API (HonoJS on Cloudflare Workers)',
     d1Connected: dbCheck?.ok === 1,
     kvConnected: Boolean(c.env.KV),
     vectorizeConnected: Boolean(c.env.VECTORIZE),
@@ -695,7 +695,7 @@ app.post('/api/v1/orders', async (c) => {
         ...createdOrder,
         items: createdItems,
       },
-      'Đặt hàng thành công! Cảm ơn bạn đã lựa chọn MỘC Coffee.',
+      'Đặt hàng thành công! Cảm ơn bạn đã lựa chọn AURA COFFEE.',
       201
     );
   } catch (err) {
@@ -858,7 +858,7 @@ app.post('/api/v1/orders/sync', async (c) => {
             .bind(
               newOrderId,
               item.product_id || 1,
-              item.product_name_snapshot || 'Cà phê MỘC',
+              item.product_name_snapshot || 'Cà phê AURA COFFEE',
               item.sku_snapshot || 'MOC-250',
               item.variant_name_snapshot || 'Gói 250g',
               item.grind_type || 'Nguyên hạt',
@@ -1406,7 +1406,7 @@ app.post('/api/v1/account/orders/:id/cancel', async (c) => {
     return fail(
       c,
       'CANNOT_CANCEL',
-      'Chỉ có thể hủy đơn hàng khi đang ở trạng thái "Chờ xác nhận". Vui lòng liên hệ Hotline 1900 6868 để được hỗ trợ.',
+      'Chỉ có thể hủy đơn hàng khi đang ở trạng thái "Chờ xác nhận". Vui lòng sử dụng trang Liên hệ để được hỗ trợ.',
       400
     );
   }
@@ -1491,7 +1491,7 @@ app.post('/api/v1/newsletter/subscribe', async (c) => {
     return ok(
       c,
       { email, alreadySubscribed: true },
-      'Email này đã có trong danh sách Hội Yêu Cà Phê MỘC. Cảm ơn bạn!'
+      'Email này đã có trong danh sách cộng đồng AURA COFFEE. Cảm ơn bạn!'
     );
   }
 
@@ -1505,7 +1505,7 @@ app.post('/api/v1/newsletter/subscribe', async (c) => {
   return ok(
     c,
     { email, subscribed: true },
-    'Đăng ký thành công! Chào mừng bạn gia nhập Hội Yêu Cà Phê MỘC.',
+    'Đăng ký thành công! Chào mừng bạn đồng hành cùng AURA COFFEE.',
     201
   );
 });
@@ -2624,7 +2624,7 @@ app.all('*', async (c) => {
   if (c.env?.ASSETS) {
     return c.env.ASSETS.fetch(c.req.raw);
   }
-  return c.text('MỘC Coffee API Worker is running.', 200);
+  return c.text('AURA COFFEE API Worker is running.', 200);
 });
 
 export default app;

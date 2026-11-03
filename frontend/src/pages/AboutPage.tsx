@@ -15,7 +15,7 @@ export default function AboutPage() {
             Từ Đất Việt, Đến Tách Cà Phê Mỗi Ngày.
           </h1>
           <p className="text-sm sm:text-base text-[#171512]/80 leading-relaxed">
-            <strong>MỘC Coffee</strong> ra đời với mong muốn mang đến trải nghiệm cà phê rang mộc nguyên bản, minh bạch về vùng nguyên liệu và gần gũi với nhịp sống hiện đại của người Việt.
+            <strong>AURA COFFEE</strong> theo đuổi trải nghiệm cà phê nguyên bản, trân trọng giá trị của hạt cà phê Việt và đồng hành cùng những khoảnh khắc thường ngày.
           </p>
           <p className="text-sm text-[#777067] leading-relaxed">
             Từ những triền đồi đất đỏ bazan đầy nắng gió tại Buôn Ma Thuột (Đắk Lắk) cho đến vùng cao nguyên sương phủ Cầu Đất (Đà Lạt), mỗi hạt cà phê đều mang trong mình câu chuyện của thổ nhưỡng và bàn tay chăm sóc tận tụy.
@@ -61,7 +61,7 @@ export default function AboutPage() {
             Nghệ Thuật Rang Mộc Mẻ Nhỏ
           </h2>
           <p className="text-sm text-[#777067] leading-relaxed">
-            Không tẩm bơ, không hương liệu nhân tạo. MỘC Coffee kiểm soát biểu đồ nhiệt (Roast Profile) riêng biệt cho từng dòng hạt để đánh thức vị ngọt hậu tự nhiên và hương thơm nguyên bản.
+            Không tẩm bơ, không hương liệu nhân tạo. AURA COFFEE chú trọng cách rang phù hợp với từng dòng hạt để tôn lên hương thơm tự nhiên và hậu vị đặc trưng.
           </p>
         </div>
 
@@ -73,7 +73,7 @@ export default function AboutPage() {
             Văn Hóa Phin &amp; Hiện Đại
           </h2>
           <p className="text-sm text-[#777067] leading-relaxed">
-            Dù bạn yêu thích ly cà phê phin sữa đá đậm đà mỗi sáng hay tách Pour Over, Espresso thanh tao nơi công sở, MỘC đều có dòng sản phẩm và cỡ xay chuẩn xác dành riêng cho bạn.
+            Dù bạn yêu thích ly cà phê phin sữa đá đậm đà mỗi sáng hay tách Pour Over, Espresso thanh tao nơi công sở, AURA COFFEE luôn có lựa chọn phù hợp với cách thưởng thức của bạn.
           </p>
         </div>
       </div>
