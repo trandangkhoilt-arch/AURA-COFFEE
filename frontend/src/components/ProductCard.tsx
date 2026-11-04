@@ -16,15 +16,15 @@ export function ProductCard({ product }: { product: Product }) {
   const inStock = product.stock > 0;
 
   return (
-    <article className="group bg-[#FFFDF9] border border-[#E6DED3] rounded-md p-3 sm:p-3.5 flex flex-col justify-between transition-shadow duration-200 hover:shadow-md">
+    <article className="group bg-[#FFFDF9] border border-[#E6DED3] rounded-xl p-3 sm:p-3.5 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-[#4A2E24]/10">
       <div>
-        <div className="relative aspect-square w-full overflow-hidden rounded bg-[#F7F2EA] mb-3.5">
+        <div className="relative aspect-[4/4.5] w-full overflow-hidden rounded-lg bg-[#F7F2EA] mb-3.5">
           <Link to={`/product/${product.slug}`} className="block w-full h-full">
             <img
               src={product.image_url}
               alt={product.name}
               loading="lazy"
-              className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.03]"
+              className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
             />
           </Link>
 
@@ -52,7 +52,7 @@ export function ProductCard({ product }: { product: Product }) {
 
           <Link
             to={`/product/${product.slug}`}
-            className="block font-semibold text-sm sm:text-[15px] text-[#171512] uppercase tracking-tight hover:text-[#A65F3B] transition-colors line-clamp-1"
+            className="block font-semibold text-sm sm:text-[15px] text-[#171512] uppercase tracking-tight hover:text-[#A65F3B] transition-colors line-clamp-2 min-h-10"
           >
             {product.name}
           </Link>

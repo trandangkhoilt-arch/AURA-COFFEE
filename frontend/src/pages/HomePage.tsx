@@ -73,10 +73,10 @@ export default function HomePage() {
           <img
             src="/images/hero-bg.png"
             alt="AURA COFFEE — Đậm vị nguyên bản – Trọn từng khoảnh khắc."
-            className="w-full h-full object-cover object-center sm:object-right"
+            className="hidden sm:block w-full h-full object-cover object-right"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#171512]/95 via-[#171512]/75 to-[#171512]/25 lg:via-[#171512]/55 lg:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#171512]/90 via-transparent to-[#171512]/50" />
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#171512]/90 via-[#171512]/55 to-[#171512]/15 lg:from-[#171512]/85 lg:via-[#171512]/35 lg:to-transparent" />
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-[#171512]/75 via-transparent to-[#171512]/25" />
         </div>
 
         {/* Handwritten Script Accent (Desktop top right like reference image) */}
@@ -111,7 +111,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-3.5">
               <Link
                 to="/shop"
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded bg-[#A65F3B] hover:bg-[#8F4F2F] text-[#FFFDF9] text-sm font-semibold transition-colors shadow-sm"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-lg bg-[#A65F3B] hover:bg-[#8F4F2F] text-[#FFFDF9] text-sm font-semibold transition-all duration-200 shadow-lg shadow-black/20 hover:-translate-y-0.5"
               >
                 <span>Khám phá cà phê</span>
                 <ArrowRight className="w-4 h-4" />
@@ -119,10 +119,22 @@ export default function HomePage() {
 
               <Link
                 to="/about"
-                className="inline-flex items-center gap-2 px-6 py-3.5 rounded border border-[#F7F2EA]/40 hover:border-[#FFFDF9] hover:bg-white/10 text-[#FFFDF9] text-sm font-medium transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg border border-[#F7F2EA]/45 hover:border-[#FFFDF9] hover:bg-white/10 text-[#FFFDF9] text-sm font-medium transition-colors"
               >
                 Câu chuyện của chúng tôi
               </Link>
+            </div>
+
+            <div className="sm:hidden relative mt-8 h-44 overflow-hidden rounded-xl border border-white/15 shadow-xl shadow-black/20">
+              <img
+                src="/images/hero-bg.png"
+                alt="Túi cà phê AURA COFFEE Robusta Buôn Ma Thuột"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#171512]/55 via-transparent to-transparent" />
+              <span className="absolute bottom-3 left-3 rounded-full border border-white/20 bg-[#171512]/65 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.16em] text-[#F7F2EA] backdrop-blur-sm">
+                Robusta · Buôn Ma Thuột
+              </span>
             </div>
           </div>
         </div>
