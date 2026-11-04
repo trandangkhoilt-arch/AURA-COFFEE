@@ -31,7 +31,7 @@ Trình duyệt sẽ mở trang xác thực tài khoản Cloudflare của bạn.
 
 ### Bước 5: Tạo cơ sở dữ liệu Cloudflare D1
 ```bash
-npx wrangler d1 create moc-coffee-db
+npx wrangler d1 create aura-coffee-db
 ```
 Lệnh này trả về thông tin `database_id` (định dạng UUID).
 
@@ -41,8 +41,8 @@ Mở tệp `wrangler.jsonc` và Thay `database_id` trong cấu hình bằng ID v
 "d1_databases": [
   {
     "binding": "DB",
-    "database_name": "moc-coffee-db",
-    "database_id": "5f8f3bde-67f5-46f8-94d5-745ea375393b"
+    "database_name": "aura-coffee-db",
+    "database_id": "<your-aura-d1-database-id>"
   }
 ],
 "kv_namespaces": [
@@ -56,7 +56,7 @@ Mở tệp `wrangler.jsonc` và Thay `database_id` trong cấu hình bằng ID v
 ### Bước 7: Tạo Cloudflare Vectorize Index & Workers KV Namespace
 ```bash
 # Tạo Vectorize Index 1024 chiều cho AI
-npx wrangler vectorize create moc-coffee-vector-index --dimensions=1024 --metric=cosine
+npx wrangler vectorize create aura-coffee-vector-index --dimensions=1024 --metric=cosine
 
 # Khởi động ứng dụng trong một terminal khác trước khi re-index
 npm run dev
@@ -64,16 +64,16 @@ npm run dev
 npm run seed:vectorize
 
 # Tạo KV Namespace cho Media Assets
-npx wrangler kv:namespace create moc-coffee-kv-assets
+npx wrangler kv:namespace create aura-coffee-kv-assets
 npm run seed:kv
 ```
 
 ### Bước 8: Kiểm tra cấu hình Binding trong `wrangler.jsonc`
 Đảm bảo `wrangler.jsonc` có đầy đủ các bindings:
-- `DB` (D1 Database: `moc-coffee-db`)
-- `KV` (Workers KV Namespace: `moc-coffee-kv-assets`)
+- `DB` (D1 Database: `aura-coffee-db`)
+- `KV` (Workers KV Namespace: `aura-coffee-kv-assets`)
 - `AI` (Workers AI)
-- `VECTORIZE` (Vectorize index: `moc-coffee-vector-index`)
+- `VECTORIZE` (Vectorize index: `aura-coffee-vector-index`)
 
 ### Bước 9: Chạy Migration cho D1 tại Local
 ```bash
@@ -134,7 +134,7 @@ Kết quả trả về `"status": "healthy"`, `"d1Connected": true`, `"kvConnect
 
 ### Bước 17: Kiểm tra dữ liệu Database D1
 ```bash
-npx wrangler d1 execute moc-coffee-db --remote --command "SELECT COUNT(*) as total_tables FROM sqlite_master WHERE type='table';"
+npx wrangler d1 execute aura-coffee-db --remote --command "SELECT COUNT(*) as total_tables FROM sqlite_master WHERE type='table';"
 ```
 
 ### Bước 18: Kiểm tra đăng nhập Admin
@@ -144,7 +144,7 @@ Truy cập `/admin/login` và đăng nhập bằng `ADMIN_BOOTSTRAP_EMAIL` và `
 Trong giao diện Admin (`/admin/products/new` hoặc `/admin/content`), tải lên một hình ảnh sản phẩm và kiểm tra đường dẫn `/api/v1/media/products/...` hiển thị ảnh kèm header `Cache-Control: public, max-age=31536000, immutable`.
 
 ### Bước 20: Kiểm tra luồng Đặt hàng và trừ Tồn kho
-Thực hiện đặt thử 1 đơn hàng trên `/checkout`, nhận mã đơn `MOC-...`, kiểm tra số lượng tồn kho sản phẩm giảm tương ứng và đơn hàng xuất hiện trong `/admin/orders`.
+Thực hiện đặt thử 1 đơn hàng trên `/checkout`, nhận mã đơn AURA, kiểm tra số lượng tồn kho sản phẩm giảm tương ứng và đơn hàng xuất hiện trong `/admin/orders`.
 
 ### Bước 21: Kiểm tra giao diện Responsive trên Production
 Mở trang web trên điện thoại di động (375px/390px) và máy tính xách tay (1366px/1440px) để nghiệm thu tốc độ tải và bố cục hiển thị.

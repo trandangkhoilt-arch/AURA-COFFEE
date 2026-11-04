@@ -16,7 +16,40 @@ interface CartContextValue {
   syncCartWithServerProducts: (latestProducts: Product[]) => void;
 }
 
-const STORAGE_KEY = 'moc_coffee_cart_v1';
+const STORAGE_KEY = 'aura_coffee_cart_v1';
+
+function loadSavedCart(): CartItem[] {
+  const isCart = (value: unknown): value is CartItem[] =>
+    Array.isArray(value) &&
+    value.every(
+      (item) =>
+        item &&
+        typeof item === 'object' &&
+        typeof item.productId === 'number' &&
+        typeof item.quantity === 'number' &&
+        typeof item.grind_type === 'string'
+    );
+
+  const current = localStorage.getItem(STORAGE_KEY);
+  if (current) {
+    const parsed: unknown = JSON.parse(current);
+    return isCart(parsed) ? parsed : [];
+  }
+
+  for (const key of Object.keys(localStorage)) {
+    if (key === STORAGE_KEY || !key.endsWith('_cart_v1')) continue;
+    const value = localStorage.getItem(key);
+    if (!value) continue;
+
+    const parsed: unknown = JSON.parse(value);
+    if (!isCart(parsed)) continue;
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+    localStorage.removeItem(key);
+    return parsed;
+  }
+  return [];
+}
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
@@ -24,8 +57,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const { showToast } = useToast();
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
+      return loadSavedCart();
     } catch {
       return [];
     }

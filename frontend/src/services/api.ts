@@ -24,13 +24,34 @@ import type {
   CustomerProfileInput,
 } from '../../shared/validators';
 
-export const CUSTOMER_TOKEN_STORAGE_KEY = 'moc_customer_token';
-export const ADMIN_TOKEN_STORAGE_KEY = 'moc_admin_token';
-export const LOCAL_ORDERS_STORAGE_KEY = 'moc_local_orders_v1';
+export const CUSTOMER_TOKEN_STORAGE_KEY = 'aura_customer_token';
+export const ADMIN_TOKEN_STORAGE_KEY = 'aura_admin_token';
+export const LOCAL_ORDERS_STORAGE_KEY = 'aura_local_orders_v1';
+
+export function getMigratedStorageValue(
+  storage: Storage,
+  key: string,
+  suffix: string
+): string | null {
+  const currentValue = storage.getItem(key);
+  if (currentValue !== null) return currentValue;
+
+  const previousKey = Object.keys(storage).find(
+    (candidate) => candidate !== key && candidate.endsWith(suffix)
+  );
+  if (!previousKey) return null;
+
+  const previousValue = storage.getItem(previousKey);
+  if (previousValue !== null) {
+    storage.setItem(key, previousValue);
+    storage.removeItem(previousKey);
+  }
+  return previousValue;
+}
 
 export function getSavedCustomerToken(): string | null {
   try {
-    return localStorage.getItem(CUSTOMER_TOKEN_STORAGE_KEY);
+    return getMigratedStorageValue(localStorage, CUSTOMER_TOKEN_STORAGE_KEY, '_customer_token');
   } catch {
     return null;
   }
@@ -50,7 +71,7 @@ export function setSavedCustomerToken(token: string | null): void {
 
 export function getSavedAdminToken(): string | null {
   try {
-    return localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY);
+    return getMigratedStorageValue(localStorage, ADMIN_TOKEN_STORAGE_KEY, '_admin_token');
   } catch {
     return null;
   }
@@ -70,7 +91,7 @@ export function setSavedAdminToken(token: string | null): void {
 
 export function getLocalCachedOrders(): Order[] {
   try {
-    const raw = localStorage.getItem(LOCAL_ORDERS_STORAGE_KEY);
+    const raw = getMigratedStorageValue(localStorage, LOCAL_ORDERS_STORAGE_KEY, '_local_orders_v1');
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];

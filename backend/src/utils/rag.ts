@@ -72,14 +72,14 @@ export const STATIC_KNOWLEDGE_DOCUMENTS: RawDocumentSection[] = [
 - Thời gian xử lý đơn: Xác nhận, rang xay mới và đóng gói trong vòng 24 giờ làm việc.
 - Thời gian giao hàng dự kiến: Nội thành TP.HCM, Hà Nội & Đắk Lắk từ 1 – 2 ngày làm việc; các tỉnh thành khác từ 2 – 4 ngày làm việc.
 - Phí vận chuyển tiêu chuẩn: Đồng giá 30.000₫/đơn toàn quốc. Miễn phí vận chuyển (0₫) cho đơn hàng từ 500.000₫ trở lên.
-- Phương thức thanh toán: Hỗ trợ COD (Thanh toán tiền mặt khi nhận hàng, được đồng kiểm) và BANK_TRANSFER (Chuyển khoản ngân hàng theo mã đơn MOC-...).`,
+- Phương thức thanh toán: Hỗ trợ COD (Thanh toán tiền mặt khi nhận hàng, được đồng kiểm) và BANK_TRANSFER (Chuyển khoản ngân hàng theo mã đơn AURA-...).`,
   },
   {
     docId: 'kb-policy-return-privacy',
     category: 'policy',
     title: 'Chính sách Đổi trả, Hủy đơn & Bảo mật thông tin',
     text: `Chính sách đổi trả, hoàn tiền và bảo mật tại AURA COFFEE:
-- Đổi trả trong 7 ngày: Đổi mới 100% miễn phí vận chuyển nếu sản phẩm bị rách bao bì, hở van 1 chiều hoặc giao sai loại hạt, sai khối lượng, sai cỡ xay. Vui lòng sử dụng trang Liên hệ kèm mã đơn (MOC-...) và ảnh thực tế.
+- Đổi trả trong 7 ngày: Đổi mới 100% miễn phí vận chuyển nếu sản phẩm bị rách bao bì, hở van 1 chiều hoặc giao sai loại hạt, sai khối lượng, sai cỡ xay. Vui lòng sử dụng trang Liên hệ kèm mã đơn AURA và ảnh thực tế.
 - Hủy đơn hàng: Khách tự hủy trực tuyến tại mục "Tài khoản -> Đơn hàng của tôi" khi đơn ở trạng thái "Chờ xác nhận" (pending), hệ thống tự động hoàn kho ngay lập tức.
 - Bảo mật thông tin: Số điện thoại được che một phần khi tra cứu đơn hàng công khai.`,
   },

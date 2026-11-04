@@ -5,8 +5,8 @@ import { fail } from '../utils/response';
 import type { WorkerEnv } from '../db/init';
 import type { AdminUser, CustomerUser } from '../../shared/types';
 
-export const SESSION_COOKIE_NAME = 'moc_admin_session';
-export const CUSTOMER_COOKIE_NAME = 'moc_user_session';
+export const SESSION_COOKIE_NAME = 'aura_admin_session';
+export const CUSTOMER_COOKIE_NAME = 'aura_user_session';
 
 // Rate limiting cho endpoint đăng nhập (10 lần thử thất bại / 5 phút trên mỗi IP)
 const loginAttempts = new Map<string, { count: number; resetAt: number }>();
@@ -170,4 +170,3 @@ export async function requireCustomerAuth(
   c.set('customerUser', customer);
   await next();
 }
-

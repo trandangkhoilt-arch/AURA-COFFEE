@@ -79,7 +79,7 @@ export default function TrackOrderPage() {
           Tra Cứu Trạng Thái Đơn Hàng
         </h1>
         <p className="text-sm text-[#777067] mt-2">
-          Nhập <strong>Mã đơn hàng</strong> (VD: <code className="font-mono text-[#4A2E24]">MOC-261019-1234</code>) hoặc chỉ cần nhập <strong>Số điện thoại đặt hàng</strong> để xem tất cả đơn của bạn.
+          Nhập <strong>Mã đơn hàng</strong> (VD: <code className="font-mono text-[#4A2E24]">AURA-261104-4829</code>) hoặc chỉ cần nhập <strong>Số điện thoại đặt hàng</strong> để xem tất cả đơn của bạn.
         </p>
         <p className="text-xs text-[#777067] mt-2">
           Hoặc{' '}
@@ -99,7 +99,7 @@ export default function TrackOrderPage() {
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Mã đơn hàng (VD: MOC-261019-xxxx)"
+            placeholder="Mã đơn hàng (VD: AURA-261104-xxxx)"
             className="w-full px-3.5 py-2.5 rounded border border-[#E6DED3] bg-[#F7F2EA]/50 text-sm font-mono uppercase focus:outline-none focus:border-[#A65F3B]"
           />
         </div>

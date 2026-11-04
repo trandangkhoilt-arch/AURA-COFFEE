@@ -4,6 +4,11 @@ export function formatVND(amount: number): string {
   return new Intl.NumberFormat('vi-VN').format(Math.round(amount)) + '₫';
 }
 
+export function normalizeOrderCode(value: string): string {
+  const code = value.trim().toUpperCase();
+  return /^[A-Z]{3}-/.test(code) ? `AURA-${code.slice(4)}` : code;
+}
+
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending: 'Chờ xác nhận',
   confirmed: 'Đã xác nhận',

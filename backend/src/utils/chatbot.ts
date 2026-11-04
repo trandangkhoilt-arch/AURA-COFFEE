@@ -9,7 +9,7 @@ import type {
   ProductVariant,
   RagTraceInfo,
 } from '../../shared/types';
-import { formatVND, ORDER_STATUS_LABELS } from '../../shared/constants';
+import { formatVND, normalizeOrderCode, ORDER_STATUS_LABELS } from '../../shared/constants';
 import { getAuthenticatedCustomer } from '../middleware/auth';
 import {
   searchVectorDB,
@@ -197,8 +197,8 @@ export async function handleBaristaChat(
     }
   }
 
-  // 3. Kiểm tra xem tin nhắn có chứa Mã đơn hàng (MOC-...) hoặc Số điện thoại (09xxxxxxxx) hoặc hỏi về đơn hàng không
-  const orderCodeMatch = message.toUpperCase().match(/MOC-[A-Z0-9]{4,10}-[A-Z0-9]{3,6}/);
+  // 3. Kiểm tra mã đơn hàng AURA hoặc số điện thoại đặt hàng.
+  const orderCodeMatch = message.toUpperCase().match(/\b(?:AURA|[A-Z]{3})-[A-Z0-9]{4,10}-[A-Z0-9]{3,6}\b/);
   const phoneMatch = message.replace(/[\s.-]/g, '').match(/(0[35789][0-9]{8})/);
   const isAskingOrder =
     orderCodeMatch !== null ||
@@ -211,7 +211,7 @@ export async function handleBaristaChat(
     const matchedOrders: Order[] = [];
 
     if (orderCodeMatch) {
-      const code = orderCodeMatch[0];
+      const code = normalizeOrderCode(orderCodeMatch[0]);
       const ord = await c.env.DB.prepare('SELECT * FROM orders WHERE order_code = ?')
         .bind(code)
         .first<Order>();
@@ -279,7 +279,7 @@ export async function handleBaristaChat(
 
     if (orderCodeMatch || phoneMatch) {
       return {
-        reply: `Mình chưa tìm thấy đơn hàng nào khớp với thông tin **${orderCodeMatch?.[0] || phoneMatch?.[1]}** trên hệ thống. Bạn vui lòng kiểm tra lại **Số điện thoại đặt hàng** hoặc **Mã đơn (MOC-...)** giúp mình nhé!`,
+        reply: `Mình chưa tìm thấy đơn hàng nào khớp với thông tin **${orderCodeMatch?.[0] || phoneMatch?.[1]}** trên hệ thống. Bạn vui lòng kiểm tra lại **Số điện thoại đặt hàng** hoặc **Mã đơn AURA** giúp mình nhé!`,
         intent: 'order_lookup',
         suggestions: [
           '📦 Tra cứu bằng SĐT 0901234567',
@@ -292,7 +292,7 @@ export async function handleBaristaChat(
 
     return {
       reply:
-        'Để mình kiểm tra trạng thái đơn hàng giúp bạn ngay nhé! Bạn chỉ cần nhắn trực tiếp **Số điện thoại đặt hàng** (ví dụ: `0901234567`) hoặc **Mã đơn hàng** (ví dụ: `MOC-261019-1234`) vào khung chat này, hoặc đăng nhập vào mục **Tài khoản** ở góc trên nhé.',
+        'Để mình kiểm tra trạng thái đơn hàng giúp bạn ngay nhé! Bạn chỉ cần nhắn trực tiếp **Số điện thoại đặt hàng** (ví dụ: `0901234567`) hoặc **Mã đơn hàng** (ví dụ: `AURA-261104-4829`) vào khung chat này, hoặc đăng nhập vào mục **Tài khoản** ở góc trên nhé.',
       intent: 'order_lookup',
       suggestions: [
         '0901234567',
@@ -371,7 +371,7 @@ export async function handleBaristaChat(
     );
 
   const isAskingBrandOrAdvantage =
-    /(nguồn gốc|nông trại|vùng trồng|câu chuyện|mộc coffee là|aura coffee là|địa chỉ|hotline|liên hệ|số điện thoại shop|ở đâu|lợi thế|ưu điểm|khác biệt|rang mộc là gì)/i.test(
+    /(nguồn gốc|nông trại|vùng trồng|câu chuyện|aura coffee là|địa chỉ|hotline|liên hệ|số điện thoại shop|ở đâu|lợi thế|ưu điểm|khác biệt|rang mộc là gì)/i.test(
       q
     );
 

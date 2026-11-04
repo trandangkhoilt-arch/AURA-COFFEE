@@ -49,7 +49,7 @@ export default function AdminProductFormPage() {
       category_id: 1,
       name: '',
       slug: '',
-      sku: 'MOC-NEW-250',
+      sku: 'AURA-NEW-250',
       origin: 'Buôn Ma Thuột, Đắk Lắk',
       roast_level: 'Rang vừa (Medium Roast)',
       process_method: 'Rang mộc nguyên bản',

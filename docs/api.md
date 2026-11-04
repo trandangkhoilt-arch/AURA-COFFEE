@@ -47,7 +47,7 @@ Tất cả các endpoint đều trả về định dạng JSON nhất quán:
 
 ---
 
-## 2. Admin APIs (Yêu cầu xác thực phiên quản trị `moc_admin_session`)
+## 2. Admin APIs (Yêu cầu xác thực phiên quản trị `aura_admin_session`)
 
 | Phương thức | Đường dẫn | Mô tả chức năng |
 |---|---|---|

@@ -35,7 +35,7 @@ import {
   customerProfileSchema,
   customerPasswordSchema,
 } from '../shared/validators';
-import { isValidOrderTransition } from '../shared/constants';
+import { isValidOrderTransition, normalizeOrderCode } from '../shared/constants';
 import type { AdminUser, CustomerUser, OrderStatus, Product, Order } from '../shared/types';
 
 type AppVariables = {
@@ -549,10 +549,10 @@ app.post('/api/v1/orders', async (c) => {
   const shippingFee = subtotal >= freeThreshold ? 0 : defaultFee;
   const total = subtotal + shippingFee;
 
-  // 5. Tạo mã đơn hàng duy nhất (VD: MOC-261019-4829)
+  // 5. Tạo mã đơn hàng duy nhất (VD: AURA-261104-4829)
   const datePart = new Date().toISOString().slice(2, 10).replace(/-/g, '');
   const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-  const orderCode = `MOC-${datePart}-${randomSuffix}`;
+  const orderCode = `AURA-${datePart}-${randomSuffix}`;
 
   // 6. Trừ tồn kho có điều kiện (UPDATE ... WHERE id = ? AND stock >= ?)
   const deductedProducts: { productId: number; qty: number }[] = [];
@@ -711,14 +711,14 @@ app.post('/api/v1/orders', async (c) => {
 
 // 11. Tra cứu đơn hàng theo Mã đơn hàng hoặc Số điện thoại (GET /api/v1/orders/track?code=...&phone=...)
 app.get('/api/v1/orders/track', async (c) => {
-  const code = (c.req.query('code') || '').trim().toUpperCase();
+  const code = normalizeOrderCode(c.req.query('code') || '');
   const phone = (c.req.query('phone') || '').trim();
 
   if (!code && !phone) {
     return fail(
       c,
       'MISSING_QUERY',
-      'Vui lòng nhập Mã đơn hàng (VD: MOC-261019-1234) hoặc Số điện thoại đặt hàng.',
+      'Vui lòng nhập Mã đơn hàng (VD: AURA-261104-4829) hoặc Số điện thoại đặt hàng.',
       400
     );
   }
@@ -859,7 +859,7 @@ app.post('/api/v1/orders/sync', async (c) => {
               newOrderId,
               item.product_id || 1,
               item.product_name_snapshot || 'Cà phê AURA COFFEE',
-              item.sku_snapshot || 'MOC-250',
+              item.sku_snapshot || 'AURA-250',
               item.variant_name_snapshot || 'Gói 250g',
               item.grind_type || 'Nguyên hạt',
               Number(item.unit_price) || 0,

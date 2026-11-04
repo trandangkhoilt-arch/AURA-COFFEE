@@ -25,7 +25,7 @@ Quý khách được kiểm tra ngoại quan gói hàng khi nhận (COD). AURA C
 - Giao sai dòng sản phẩm, sai khối lượng hoặc sai kiểu xay so với đơn đặt hàng.
 
 2. Quy trình thực hiện:
-- Vui lòng liên hệ Hotline hoặc trang Liên hệ kèm mã đơn hàng (MOC-...) và hình ảnh sản phẩm thực tế để được xử lý nhanh chóng.`,
+- Vui lòng liên hệ trang Liên hệ kèm mã đơn hàng AURA và hình ảnh sản phẩm thực tế để được xử lý nhanh chóng.`,
   },
   'chinh-sach-bao-mat': {
     title: 'Chính Sách Bảo Mật Thông Tin',

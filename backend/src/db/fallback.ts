@@ -79,7 +79,7 @@ const mem: MemoryStore = {
       category_id: 1,
       name: 'Robusta Buôn Ma Thuột',
       slug: 'robusta-buon-ma-thuot',
-      sku: 'MOC-RBM-250',
+      sku: 'AURA-RBM-250',
       origin: 'Buôn Ma Thuột, Đắk Lắk',
       roast_level: 'Rang vừa đậm (Medium-Dark)',
       process_method: 'Chế biến khô tự nhiên (Natural)',
@@ -107,7 +107,7 @@ const mem: MemoryStore = {
       category_id: 2,
       name: 'Arabica Cầu Đất',
       slug: 'arabica-cau-dat',
-      sku: 'MOC-ACD-250',
+      sku: 'AURA-ACD-250',
       origin: 'Cầu Đất, Đà Lạt (1.500m)',
       roast_level: 'Rang sáng vừa (Light-Medium)',
       process_method: 'Chế biến ướt (Fully Washed)',
@@ -135,7 +135,7 @@ const mem: MemoryStore = {
       category_id: 1,
       name: 'Blend Phin Việt',
       slug: 'blend-phin-viet',
-      sku: 'MOC-BPV-250',
+      sku: 'AURA-BPV-250',
       origin: 'Đắk Lắk & Lâm Đồng',
       roast_level: 'Rang vừa đậm (Medium-Dark)',
       process_method: 'Phối trộn truyền thống 70/30',
@@ -163,7 +163,7 @@ const mem: MemoryStore = {
       category_id: 3,
       name: 'Espresso House Blend',
       slug: 'espresso-house-blend',
-      sku: 'MOC-EHB-250',
+      sku: 'AURA-EHB-250',
       origin: 'Tây Nguyên, Việt Nam',
       roast_level: 'Rang vừa (Medium Roast)',
       process_method: 'Chế biến Honey & Washed',
@@ -191,7 +191,7 @@ const mem: MemoryStore = {
       category_id: 2,
       name: 'Fine Robusta Honey Đắk Nông',
       slug: 'fine-robusta-honey-dak-nong',
-      sku: 'MOC-FRH-250',
+      sku: 'AURA-FRH-250',
       origin: 'Đắk Mil, Đắk Nông',
       roast_level: 'Rang vừa (Medium Roast)',
       process_method: 'Chế biến mật ong (Yellow Honey)',
@@ -219,7 +219,7 @@ const mem: MemoryStore = {
       category_id: 2,
       name: 'Arabica Sơn La Bourbon',
       slug: 'arabica-son-la-bourbon',
-      sku: 'MOC-ASL-250',
+      sku: 'AURA-ASL-250',
       origin: 'Mường Chanh, Sơn La',
       roast_level: 'Rang sáng (Light Roast)',
       process_method: 'Chế biến ướt (Washed)',
@@ -247,7 +247,7 @@ const mem: MemoryStore = {
       category_id: 3,
       name: 'Cold Brew Signature Blend',
       slug: 'cold-brew-signature-blend',
-      sku: 'MOC-CBS-250',
+      sku: 'AURA-CBS-250',
       origin: 'Cầu Đất & Quảng Trị',
       roast_level: 'Rang sáng vừa (Light-Medium)',
       process_method: 'Natural & Washed',
@@ -275,7 +275,7 @@ const mem: MemoryStore = {
       category_id: 4,
       name: 'Hộp Quà Tinh Hoa Cà Phê Việt',
       slug: 'hop-qua-tinh-hoa-ca-phe-viet',
-      sku: 'MOC-GIFT-750',
+      sku: 'AURA-GIFT-750',
       origin: 'Buôn Ma Thuột & Cầu Đất',
       roast_level: 'Đa dạng mức rang',
       process_method: 'Tuyển chọn 3 dòng cà phê tiêu biểu',
@@ -431,7 +431,7 @@ const mem: MemoryStore = {
   initialized: false,
 };
 
-const EDGE_CACHE_STATE_URL = 'https://edge-state.moccoffee.internal/__db_snapshot_v2';
+const EDGE_CACHE_STATE_URL = 'https://edge-state.auracoffee.internal/__db_snapshot_v2';
 
 function mergeByKey<T extends Record<string, any>>(target: T[], incoming: T[], key: keyof T): T[] {
   const map = new Map<any, T>();

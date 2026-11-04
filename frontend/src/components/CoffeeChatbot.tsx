@@ -12,7 +12,7 @@ import {
   ChevronRight,
   Database,
 } from 'lucide-react';
-import { api } from '../services/api';
+import { api, getMigratedStorageValue } from '../services/api';
 import { useCart } from '../features/cart/CartContext';
 import { useToast } from './ToastContext';
 import { useCustomerAuth } from '../features/auth/CustomerAuthContext';
@@ -33,7 +33,7 @@ interface UIMessage {
   rag?: RagTraceInfo;
 }
 
-const CHAT_STORAGE_KEY = 'moc_barista_chat_v2';
+const CHAT_STORAGE_KEY = 'aura_barista_chat_v2';
 
 const DEFAULT_SUGGESTIONS = [
   '🫖 Tư vấn cà phê pha Phin đậm đà',
@@ -103,7 +103,7 @@ export function CoffeeChatbot() {
 
   const [messages, setMessages] = useState<UIMessage[]>(() => {
     try {
-      const saved = sessionStorage.getItem(CHAT_STORAGE_KEY);
+      const saved = getMigratedStorageValue(sessionStorage, CHAT_STORAGE_KEY, '_barista_chat_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;

@@ -19,7 +19,7 @@ Website thương mại điện tử cà phê đặc sản Việt Nam hoàn chỉ
 - **Cửa hàng (`/shop`) & Danh mục (`/category/:slug`) & Tìm kiếm (`/search`)**: Lọc theo danh mục, mức giá VND, trạng thái còn hàng, từ khóa và sắp xếp theo giá/đánh giá/mới nhất.
 - **Chi tiết sản phẩm (`/product/:slug`)**: Chọn hình thức hạt hoặc xay miễn phí (`Nguyên hạt`, `Xay pha Phin`, `Xay pha Máy Espresso`, `Xay Pour Over / V60`, `Xay Cold Brew`), xem tồn kho thực tế, gợi ý pha chế và sản phẩm liên quan.
 - **Giỏ hàng (`/cart` & Slide-out Drawer) & Thanh toán (`/checkout`)**: Lưu giỏ hàng bền vững trên thiết bị, tự động đồng bộ giá & tồn kho thực tế từ D1 khi thanh toán, kiểm tra dữ liệu bằng Tiếng Việt với Zod + React Hook Form, chống gửi đơn trùng bằng `idempotency_key`.
-- **Đặt hàng thành công (`/order-success`) & Tra cứu đơn hàng (`/track-order`)**: Tra cứu tiến độ đơn hàng và lịch sử trạng thái theo mã đơn (`MOC-...`).
+- **Đặt hàng thành công (`/order-success`) & Tra cứu đơn hàng (`/track-order`)**: Tra cứu tiến độ đơn hàng và lịch sử trạng thái theo mã đơn AURA.
 - **Câu chuyện (`/about`), Cẩm nang Blog (`/blog`, `/blog/:slug`), Liên hệ (`/contact`), Chính sách (`/policies/:slug`) và Trang 404**.
 
 ### Hệ thống Quản trị Admin (`/admin/*`)
@@ -37,7 +37,7 @@ Website thương mại điện tử cà phê đặc sản Việt Nam hoàn chỉ
 - **Backend**: HonoJS v4 trên Cloudflare Workers Runtime (`/api/v1/*`).
 - **Database**: Cloudflare D1 (SQLite) — 15 bảng dữ liệu.
 - **Media & Asset Storage**: Cloudflare Workers KV (`KV` binding) phân tán toàn cầu tại Edge.
-- **Vector Database**: Cloudflare Vectorize (`VECTORIZE` binding) index `moc-coffee-vector-index` (1024 dimensions, metric cosine) phục vụ RAG AI Barista Chatbot.
+- **Vector Database**: Cloudflare Vectorize (`VECTORIZE` binding) index `aura-coffee-vector-index` (1024 dimensions, metric cosine) phục vụ RAG AI Barista Chatbot.
 - **Workers AI**: Trực tiếp chạy mô hình nhúng `@cf/baai/bge-m3` và mô hình ngôn ngữ lớn `@cf/meta/llama-3.3-70b-instruct-fp8-fast`.
 - **Testing**: Vitest + Node SQLite (`node:sqlite`) kiểm thử tích hợp toàn bộ luồng API, D1, Workers KV, Auth và Tồn kho.
 
@@ -151,6 +151,6 @@ npm run deploy:web
 
 ## 8. Troubleshooting & Cập Nhật Sau Khi Deploy
 - **Lỗi `D1_ERROR: no such table`**: Đảm bảo bạn đã chạy `npm run db:migrate:prod` với đúng `database_id` trong `wrangler.jsonc`.
-- **Lỗi tải ảnh Workers KV (`503 KV_NOT_CONFIGURED`)**: Kiểm tra KV Namespace đã được tạo bằng `npx wrangler kv:namespace create moc-coffee-kv-assets` và khớp với binding `KV` trong `wrangler.jsonc`.
+- **Lỗi tải ảnh Workers KV (`503 KV_NOT_CONFIGURED`)**: Kiểm tra KV Namespace đã được tạo bằng `npx wrangler kv:namespace create aura-coffee-kv-assets` và khớp với binding `KV` trong `wrangler.jsonc`.
 - **Deploy báo "Workers-specific command in a Pages project"**: Không dùng `npx wrangler deploy`; dùng Cloudflare Pages Git integration hoặc `npx wrangler pages deploy dist --project-name aura-coffee`.
 - **Cập nhật giao diện hoặc API sau khi sửa code**: Chạy `npm test && npm run build`; với Pages kết nối GitHub, push lên nhánh production để Cloudflare tự deploy.

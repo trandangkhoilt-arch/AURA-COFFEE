@@ -377,7 +377,7 @@ describe('AURA COFFEE Full-Stack HonoJS + D1 + Workers KV Integration Suite', ()
 
     expect(res.status).toBe(200);
     const setCookieHeader = res.headers.get('set-cookie') || '';
-    expect(setCookieHeader).toContain('moc_admin_session=');
+    expect(setCookieHeader).toContain('aura_admin_session=');
     expect(setCookieHeader).toContain('HttpOnly');
     adminCookie = setCookieHeader.split(';')[0];
   });
@@ -414,7 +414,7 @@ describe('AURA COFFEE Full-Stack HonoJS + D1 + Workers KV Integration Suite', ()
       category_id: 2,
       name: 'Cà Phê Liberica Quảng Trị',
       slug: 'ca-phe-liberica-quang-tri',
-      sku: 'MOC-LIB-250',
+      sku: 'AURA-LIB-250',
       origin: 'Hướng Hóa, Quảng Trị',
       roast_level: 'Rang sáng vừa',
       process_method: 'Natural',

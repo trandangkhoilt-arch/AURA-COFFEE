@@ -99,7 +99,7 @@ sequenceDiagram
         User->>Worker: Gửi câu hỏi: "Cà phê nào pha phin đậm đà không chua?"
         
         opt Phân loại Intent & Tool Calling
-            Worker->>SQL: Nếu có SĐT / Mã đơn MOC-... -> Truy vấn SQL tra cứu đơn hàng
+            Worker->>SQL: Nếu có SĐT / Mã đơn AURA -> Truy vấn SQL tra cứu đơn hàng
         end
 
         Worker->>Embed: Nhúng câu hỏi thành Query Vector (1024 dims)
@@ -230,7 +230,7 @@ ${retrievedContextText}`;
 Không chỉ dừng lại ở một chatbot hỏi đáp văn bản thông thường, đồ án đã tích hợp các năng lực cấp cao của hệ thống thương mại điện tử hiện đại:
 
 ### 5.1. Tự động Nhận diện Intent & Tra cứu Đơn hàng tức thì qua SQL (Tool Use)
-- Hệ thống sử dụng RegEx thông minh nhận diện định dạng Mã đơn hàng (`MOC-[A-Z0-9]+`) hoặc Số điện thoại Việt Nam (`0[3|5|7|8|9][0-9]{8}`).
+- Hệ thống sử dụng RegEx thông minh nhận diện định dạng Mã đơn AURA (`AURA-[A-Z0-9]+`) hoặc Số điện thoại Việt Nam (`0[3|5|7|8|9][0-9]{8}`).
 - Khi khách hỏi: *"Đơn hàng 0901234567 của mình tới đâu rồi?"*, hệ thống tự động rẽ nhánh sang truy vấn SQL trên Cloudflare D1:
   - Truy xuất chính xác tên người nhận, địa chỉ giao hàng, tổng tiền, phương thức thanh toán.
   - Trả về thẻ đơn hàng tương tác với nhãn trạng thái sinh động (`Chờ xác nhận`, `Đang giao hàng`, `Đã nhận`).

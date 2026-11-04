@@ -1,5 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { api, getSavedCustomerToken, setSavedCustomerToken } from '../../services/api';
+import {
+  api,
+  getMigratedStorageValue,
+  getSavedCustomerToken,
+  setSavedCustomerToken,
+} from '../../services/api';
 import type { CustomerUser } from '../../../shared/types';
 import type {
   CustomerLoginInput,
@@ -7,11 +12,15 @@ import type {
   CustomerProfileInput,
 } from '../../../shared/validators';
 
-const CUSTOMER_PROFILE_STORAGE_KEY = 'moc_customer_profile_v1';
+const CUSTOMER_PROFILE_STORAGE_KEY = 'aura_customer_profile_v1';
 
 function loadCachedProfile(): CustomerUser | null {
   try {
-    const raw = localStorage.getItem(CUSTOMER_PROFILE_STORAGE_KEY);
+    const raw = getMigratedStorageValue(
+      localStorage,
+      CUSTOMER_PROFILE_STORAGE_KEY,
+      '_customer_profile_v1'
+    );
     if (!raw) return null;
     return JSON.parse(raw) as CustomerUser;
   } catch {

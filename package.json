@@ -1,5 +1,5 @@
 {
-  "name": "moc-coffee",
+  "name": "aura-coffee",
   "private": true,
   "version": "1.0.0",
   "description": "AURA COFFEE — Đậm vị nguyên bản – Trọn từng khoảnh khắc. Full-stack E-Commerce trên Cloudflare Pages/Workers, HonoJS, D1, Workers KV và ReactJS",
@@ -14,11 +14,11 @@
     "test": "vitest run",
     "seed:kv": "node scripts/seed-kv-images.mjs",
     "seed:vectorize": "node scripts/seed-vectorize.mjs",
-    "vectorize:create": "wrangler vectorize create moc-coffee-vector-index --dimensions=1024 --metric=cosine",
-    "kv:create": "wrangler kv:namespace create moc-coffee-kv-assets",
-    "db:migrate:local": "wrangler d1 execute moc-coffee-db --local --file=./backend/migrations/0001_schema.sql",
-    "db:migrate:prod": "wrangler d1 execute moc-coffee-db --remote --file=./backend/migrations/0001_schema.sql",
-    "db:seed": "wrangler d1 execute moc-coffee-db --local --file=./backend/seeds/seed.sql",
+    "vectorize:create": "wrangler vectorize create aura-coffee-vector-index --dimensions=1024 --metric=cosine",
+    "kv:create": "wrangler kv:namespace create aura-coffee-kv-assets",
+    "db:migrate:local": "wrangler d1 execute aura-coffee-db --local --file=./backend/migrations/0001_schema.sql",
+    "db:migrate:prod": "wrangler d1 execute aura-coffee-db --remote --file=./backend/migrations/0001_schema.sql",
+    "db:seed": "wrangler d1 execute aura-coffee-db --local --file=./backend/seeds/seed.sql",
     "deploy:api": "npm run build && wrangler pages deploy dist",
     "deploy:web": "npm run build && wrangler pages deploy dist"
   },

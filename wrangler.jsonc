@@ -11,7 +11,7 @@
   "vectorize": [
     {
       "binding": "VECTORIZE",
-      "index_name": "moc-coffee-vector-index"
+      "index_name": "aura-coffee-vector-index"
     }
   ],
   "vars": {
@@ -24,14 +24,14 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "moc-coffee-db",
-      "database_id": "1b01749f-8d22-427d-aad0-4285763161ef"
+      "database_name": "aura-coffee-db",
+      "database_id": "dd20470d-1b6e-4195-a8c1-f98cb7bb5c79"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "e7e3a195265349d8a5b17c4816d17437"
+      "id": "42e10f42d68f4784be05a7295ff4b810"
     }
   ]
 }
