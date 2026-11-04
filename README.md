@@ -45,7 +45,7 @@ Website thương mại điện tử cà phê đặc sản Việt Nam hoàn chỉ
 
 ## 4. Cấu Trúc Thư Mục (Chia tách rõ ràng `frontend/` và `backend/`)
 ```text
-moc-coffee/
+aura-coffee/
 ├── frontend/                # Toàn bộ mã nguồn Giao diện người dùng & Admin (ReactJS + TypeScript)
 │   ├── public/              # Hình ảnh thương hiệu, favicon, _redirects, _routes.json, robots.txt, sitemap.xml
 │   ├── shared/              # Types, hằng số VND, State Machine & Zod Validators cho Frontend
