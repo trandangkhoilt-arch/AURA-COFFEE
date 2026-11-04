@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const imagesDir = path.resolve(__dirname, '../frontend/public/images');
 
-console.log('=== MỘC COFFEE - ĐỒNG BỘ ẢNH LÊN CLOUDFLARE WORKERS KV ===');
+console.log('=== AURA COFFEE - ĐỒNG BỘ ẢNH LÊN CLOUDFLARE WORKERS KV ===');
 console.log(`Đang đọc thư mục hình ảnh: ${imagesDir}`);
 
 if (!fs.existsSync(imagesDir)) {
@@ -50,4 +50,3 @@ console.log('\nĐường dẫn phân phối tại Edge sẽ tương ứng:');
 imagesList.forEach(({ kvKey }) => {
   console.log(`   https://<domain>/api/v1/media/${encodeURIComponent(kvKey)}`);
 });
-

@@ -111,7 +111,7 @@ function createMemoryKVAdapter(): KVNamespace {
   } as unknown as KVNamespace;
 }
 
-describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', () => {
+describe('AURA COFFEE Full-Stack HonoJS + D1 + Workers KV Integration Suite', () => {
   let env: WorkerEnv;
   let adminCookie = '';
   let createdOrderId = 0;
@@ -126,7 +126,7 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
       ENVIRONMENT: 'development',
       DEFAULT_SHIPPING_FEE: '30000',
       FREE_SHIPPING_THRESHOLD: '500000',
-      ADMIN_BOOTSTRAP_EMAIL: 'admin@moccoffee.vn',
+      ADMIN_BOOTSTRAP_EMAIL: 'admin@auracoffee.local',
       ADMIN_BOOTSTRAP_PASSWORD: 'StrongPassword#2026',
     };
   });
@@ -368,7 +368,7 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'admin@moccoffee.vn',
+          email: 'admin@auracoffee.local',
           password: 'StrongPassword#2026',
         }),
       },
@@ -724,7 +724,7 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          identifier: 'admin@moccoffee.vn',
+          identifier: 'admin@auracoffee.local',
           password: 'StrongPassword#2026',
         }),
       },
@@ -802,7 +802,7 @@ describe('MỘC Coffee Full-Stack HonoJS + D1 + Workers KV Integration Suite', (
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          message: 'Cho mình hỏi quyền lợi khách hàng và chính sách đổi trả 7 ngày của MỘC Coffee?',
+          message: 'Cho mình hỏi quyền lợi khách hàng và chính sách đổi trả 7 ngày của AURA COFFEE?',
         }),
       },
       env

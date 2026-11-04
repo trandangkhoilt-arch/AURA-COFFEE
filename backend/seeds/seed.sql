@@ -151,7 +151,7 @@ INSERT OR IGNORE INTO banners (
 )
 VALUES (
   1,
-  'Hương Vị Việt. Đánh Thức Đam Mê.',
+  'Đậm vị nguyên bản – Trọn từng khoảnh khắc.',
   'Từ những vùng nguyên liệu trù phú đến tách cà phê mỗi sáng — chọn hương vị dành riêng cho bạn.',
   'GOOD COFFEE, BETTER DAYS',
   'Khám phá cà phê',

@@ -298,8 +298,8 @@ export async function ensureDatabaseInitialized(env: WorkerEnv): Promise<void> {
     const isDev = (env.ENVIRONMENT || 'development') !== 'production';
     const adminCount = await env.DB.prepare("SELECT COUNT(*) as count FROM users WHERE role = 'admin'").first<{ count: number }>();
     if (!adminCount || adminCount.count === 0) {
-      const bootstrapEmail = env.ADMIN_BOOTSTRAP_EMAIL || (isDev ? 'admin@moccoffee.vn' : '');
-      const bootstrapPass = env.ADMIN_BOOTSTRAP_PASSWORD || (isDev ? 'MocCoffee@2026' : '');
+      const bootstrapEmail = env.ADMIN_BOOTSTRAP_EMAIL || (isDev ? 'admin@auracoffee.local' : '');
+      const bootstrapPass = env.ADMIN_BOOTSTRAP_PASSWORD || (isDev ? 'AuraCoffeeLocal@2026' : '');
       if (!bootstrapEmail || !bootstrapPass) {
         throw new Error('Production admin bootstrap requires ADMIN_BOOTSTRAP_EMAIL and ADMIN_BOOTSTRAP_PASSWORD.');
       }
@@ -307,7 +307,7 @@ export async function ensureDatabaseInitialized(env: WorkerEnv): Promise<void> {
       const { hash, salt } = await hashPassword(bootstrapPass);
       await env.DB.prepare(
         `INSERT OR IGNORE INTO users (email, phone, full_name, password_hash, password_salt, role, province, district, ward, shipping_address, is_active)
-         VALUES (?, '0909888999', 'Quản trị viên AURA COFFEE', ?, ?, 'admin', 'TP. Hồ Chí Minh', 'Quận 1', 'Phường Bến Nghé', 'Số 86 Nguyễn Huệ', 1)`
+         VALUES (?, '', 'Quản trị viên AURA COFFEE', ?, ?, 'admin', '', '', '', '', 1)`
       )
         .bind(bootstrapEmail.toLowerCase(), hash, salt)
         .run();
@@ -315,7 +315,7 @@ export async function ensureDatabaseInitialized(env: WorkerEnv): Promise<void> {
       if (isDev) {
         await env.DB.prepare(
           `INSERT OR IGNORE INTO users (email, phone, full_name, password_hash, password_salt, role, province, district, ward, shipping_address, is_active)
-           VALUES ('khachhang@moccoffee.vn', '0901234567', 'Nguyễn Minh Anh', ?, ?, 'customer', 'TP. Hồ Chí Minh', 'Quận 3', 'Phường Võ Thị Sáu', 'Số 128 Điện Biên Phủ', 1)`
+           VALUES ('customer@auracoffee.local', '', 'Khách hàng thử nghiệm', ?, ?, 'customer', '', '', '', '', 1)`
         )
           .bind(hash, salt)
           .run();
@@ -348,7 +348,7 @@ export async function ensureDatabaseInitialized(env: WorkerEnv): Promise<void> {
           (5, 2, 'Fine Robusta Honey Đắk Nông', 'fine-robusta-honey-dak-nong', 'MOC-FRH-250', 'Đắk Mil, Đắk Nông', 'Rang vừa (Medium Roast)', 'Chế biến mật ong (Yellow Honey)', 'Trái cây nhiệt đới • Mật mía • Dày vị', 'Dòng Fine Robusta lên men tự nhiên giữ lại lớp thịt quả ngọt ngào, mang đến góc nhìn hoàn toàn mới về hạt Robusta Việt.', 'Thu hái 100% trái chín đỏ và sơ chế theo phương pháp Yellow Honey trên giàn phơi nhà kính. Sản phẩm có độ ngọt tự nhiên cao, hương mít chín nhẹ nhàng kết hợp cùng vị cacao đặc trưng.', 195000, NULL, 45, 250, '#183B2D', 'Micro-Lot', 0, 1, 4.9, 54, '/images/product-house-blend.png'),
           (6, 2, 'Arabica Sơn La Bourbon', 'arabica-son-la-bourbon', 'MOC-ASL-250', 'Mường Chanh, Sơn La', 'Rang sáng (Light Roast)', 'Chế biến ướt (Washed)', 'Táo đỏ • Trà đen • Dịu mượt', 'Hạt cà phê vùng Tây Bắc với hương thơm thảo mộc dịu nhẹ, hậu vị thanh sạch kéo dài.', 'Cà phê Arabica trồng dưới tán cây ăn quả tại Sơn La mang sắc thái thanh tao, vị chua dịu tựa táo chín và hậu vị ngọt mát như trà ô long.', 220000, 199000, 38, 250, '#A65F3B', 'Mùa vụ mới', 0, 1, 4.7, 41, '/images/product-colombia.png'),
           (7, 3, 'Cold Brew Signature Blend', 'cold-brew-signature-blend', 'MOC-CBS-250', 'Cầu Đất & Quảng Trị', 'Rang sáng vừa (Light-Medium)', 'Natural & Washed', 'Cam vàng • Mơ chín • Thanh mát', 'Phối trộn tối ưu để ủ lạnh 16–24 giờ tại nhà, cho ra bình Cold Brew thơm ngát hương trái cây nhiệt đới.', 'Khi ủ lạnh cùng nước tinh khiết, Cold Brew Signature Blend giải phóng hương thơm cam vàng, quả mơ và vị ngọt thanh không hề gắt cổ, giúp bạn tỉnh táo suốt ngày dài.', 190000, NULL, 64, 250, '#171512', 'Ủ lạnh 18h', 0, 1, 4.8, 76, '/images/product-ethiopia.png'),
-          (8, 4, 'Hộp Quà Tinh Hoa Cà Phê Việt', 'hop-qua-tinh-hoa-ca-phe-viet', 'MOC-GIFT-750', 'Buôn Ma Thuột & Cầu Đất', 'Đa dạng mức rang', 'Tuyển chọn 3 dòng cà phê tiêu biểu', 'Sang trọng • Đậm bản sắc • Quà tặng ý nghĩa', 'Bộ sưu tập gồm 3 gói 250g (Robusta Buôn Ma Thuột, Arabica Cầu Đất, Blend Phin Việt) kèm phin nhôm cao cấp.', 'Món quà tinh tế dành tặng đối tác, khách hàng và người thân yêu cà phê. Hộp giấy mỹ thuật thân thiện môi trường kèm cẩm nang hướng dẫn pha chế chi tiết từ MỘC Coffee.', 490000, 445000, 30, 750, '#4A2E24', 'Quà tặng cao cấp', 0, 1, 5.0, 62, '/images/product-sumatra.png')
+          (8, 4, 'Hộp Quà Tinh Hoa Cà Phê Việt', 'hop-qua-tinh-hoa-ca-phe-viet', 'MOC-GIFT-750', 'Buôn Ma Thuột & Cầu Đất', 'Đa dạng mức rang', 'Tuyển chọn 3 dòng cà phê tiêu biểu', 'Sang trọng • Đậm bản sắc • Quà tặng ý nghĩa', 'Bộ sưu tập gồm 3 gói 250g (Robusta Buôn Ma Thuột, Arabica Cầu Đất, Blend Phin Việt) kèm phin nhôm cao cấp.', 'Món quà tinh tế dành tặng người yêu cà phê, kèm cẩm nang hướng dẫn pha chế của AURA COFFEE.', 490000, 445000, 30, 750, '#4A2E24', 'Quà tặng cao cấp', 0, 1, 5.0, 62, '/images/product-sumatra.png')
         `),
         env.DB.prepare(`
           INSERT OR IGNORE INTO banners (id, title, subtitle, eyebrow, cta_primary_text, cta_primary_link, cta_secondary_text, cta_secondary_link, image_url, position, is_active, sort_order)

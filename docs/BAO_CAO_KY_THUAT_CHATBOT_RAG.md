@@ -1,11 +1,11 @@
 # BÁO CÁO KỸ THUẬT: NGHIÊN CỨU & XÂY DỰNG TRỢ LÝ BARISTA AI (RAG CHATBOT)
-## HỆ THỐNG THƯƠNG MẠI ĐIỆN TỬ CÀ PHÊ ĐẶC SẢN MỘC COFFEE
+## HỆ THỐNG THƯƠNG MẠI ĐIỆN TỬ CÀ PHÊ ĐẶC SẢN AURA COFFEE
 
 ---
 
 > **Học phần**: Phát triển Hệ thống Thông tin / Trí tuệ Nhân tạo Ứng dụng  
 > **Đề tài**: Xây dựng Chatbot tư vấn và tra cứu đơn hàng bằng kiến trúc RAG (Retrieval-Augmented Generation) trên nền tảng Serverless Edge  
-> **Dự án thực tế**: MỘC Coffee (`d:\Coffee`)  
+> **Dự án thực tế**: AURA COFFEE
 > **Công nghệ chủ đạo**: Cloudflare Workers AI, BAAI BGE-M3, Llama 3.3 70B Instruct, Cloudflare D1 / Vectorize, HonoJS, React 19  
 
 ---
@@ -62,7 +62,7 @@ Dự án đã hiện thực hóa chính xác 100% mô hình lý thuyết đượ
 | **⚠️ Không được bịa** | Ràng buộc chống Hallucination | System Prompt ép LLM chỉ trả lời dựa trên context được trích xuất từ Vector DB; nếu không có phải thừa nhận lịch sự. | [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts#L540-L547) |
 | **Chỉ sử dụng chữ liên quan có** | Grounding constraint | Context Injection đưa Top-K Chunks vào Prompt; thiết lập nhiệt độ ngẫu nhiên thấp (`temperature = 0.25`). | [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts#L564) |
 | **(CF)** | Nền tảng hạ tầng tính toán | **Cloudflare Workers AI** & **Cloudflare Pages / D1 / Vectorize Serverless Edge**. | [`wrangler.jsonc`](file:///d:/Coffee/wrangler.jsonc#L6-L16) |
-| **Knowledge (private)** | Kho tri thức nội bộ (docs, txt, product) | Tài liệu [`MOC_Coffee_Chatbot_Knowledge_Base.docx`](file:///d:/Coffee/docs/MOC_Coffee_Chatbot_Knowledge_Base.docx) (7 phần chuẩn hóa) + Bảng dữ liệu sản phẩm `products` trong Cloudflare D1. | [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts#L36-L218) |
+| **Knowledge (private)** | Kho tri thức nội bộ (docs, txt, product) | Tài liệu kiến thức được khai báo trong mã nguồn và dữ liệu sản phẩm hiện hành trong Cloudflare D1. | [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts#L36-L218) |
 | **Chunking** | Chia nhỏ văn bản có ngữ nghĩa | Hàm `splitTextIntoSemanticChunks`: cắt đoạn văn 420–520 ký tự kèm vùng gối đầu (overlap) 50–60 ký tự. | [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts#L135-L173) |
 | **① Word Embedding** | Vector hóa văn bản ngữ nghĩa | Mô hình `@cf/baai/bge-m3` nhúng thành mảng số thực **1024 token/chiều**. | [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts#L290-L314) |
 | **② DB Vector** | Cơ sở dữ liệu Vector & Index | Bảng `rag_chunks` trong Cloudflare D1 (lưu JSON vector) kết hợp Cloudflare Vectorize Index (`env.VECTORIZE`). | [`backend/migrations/0001_schema.sql`](file:///d:/Coffee/backend/migrations/0001_schema.sql#L278-L292) |
@@ -120,8 +120,8 @@ sequenceDiagram
 ### Bước 1: Chuẩn bị Dữ liệu Tri thức (Knowledge Base Ingestion)
 Hệ thống kết hợp 2 nguồn tri thức:
 1. **Tri thức Tĩnh (Unstructured Domain Knowledge):**
-   Được biên soạn chuẩn hóa theo tài liệu nghiệp vụ `MOC_Coffee_Chatbot_Knowledge_Base.docx` thành 7 nhóm chủ đề chính:
-   - `brand`: Bản sắc thương hiệu, slogan, địa chỉ xưởng Buôn Ma Thuột & showroom Quận 1 TP.HCM, hotline `1900 6868`.
+   Được biên soạn thành các nhóm chủ đề chính:
+   - `brand`: Bản sắc thương hiệu và slogan; thông tin liên hệ chỉ được cung cấp khi đã xác nhận.
    - `advantage`: 5 lợi thế cạnh tranh (100% rang mộc nguyên bản không tẩm bơ bắp, vùng trồng minh bạch 100% chín đỏ, rang mẻ nhỏ small-batch, bao bì Kraft van 1 chiều).
    - `benefit`: Quyền lợi khách hàng (xay miễn phí 5 cấp độ, đồng kiểm COD, Freeship từ 500k, đổi mới 7 ngày).
    - `policy`: Chính sách vận chuyển toàn quốc (1-2 ngày nội thành, 2-4 ngày tỉnh), hình thức thanh toán, bảo mật thông tin.
@@ -206,11 +206,11 @@ $$\text{Score}_{\text{final}} = \min\left(0.9999, \text{Cosine}(\vec{A}, \vec{B}
   Đúng theo tinh thần "User Story: Không được bịa, chỉ sử dụng chữ liên quan có" trên bảng, Prompt được thiết kế như sau:
 
 ```typescript
-const systemPrompt = `Bạn là Trợ lý Barista AI chính thức của thương hiệu cà phê đặc sản Việt Nam "MỘC Coffee — Hương Vị Việt. Đánh Thức Đam Mê.".
+const systemPrompt = `Bạn là Trợ lý Barista AI chính thức của thương hiệu cà phê đặc sản Việt Nam "AURA COFFEE — Đậm vị nguyên bản – Trọn từng khoảnh khắc.".
 ${customerName ? `Khách hàng đang trò chuyện tên là: ${customerName}.` : ''}
 
 NHIỆM VỤ & QUY TẮC BẮT BUỘC:
-1. Chỉ sử dụng thông tin trong phần [NGỮ CẢNH TRI THỨC TỪ VECTOR DB] bên dưới để trả lời chính xác về sản phẩm, giá bán, tồn kho, lợi thế, quyền lợi, chính sách giao hàng/đổi trả và công thức pha chế của MỘC Coffee.
+1. Chỉ sử dụng thông tin trong phần [NGỮ CẢNH TRI THỨC TỪ VECTOR DB] bên dưới để trả lời chính xác về sản phẩm, giá bán, tồn kho, lợi thế, quyền lợi, chính sách giao hàng/đổi trả và công thức pha chế của AURA COFFEE.
 2. Trả lời bằng tiếng Việt ấm áp, lịch sự, chuyên nghiệp, ngắn gọn dễ đọc (sử dụng gạch đầu dòng • và in đậm **từ khóa quan trọng**).
 3. Luôn nêu rõ mức giá chính xác bằng VNĐ và nhắc khách hàng có thể chọn "Nguyên hạt" hoặc "Xay miễn phí theo dụng cụ pha (Phin, Máy Espresso, V60, Cold Brew)".
 4. Phí vận chuyển hiện tại là ${formatVND(shippingFee)}, miễn phí vận chuyển (Freeship) toàn quốc cho đơn từ ${formatVND(freeThreshold)}.
@@ -324,4 +324,4 @@ Hệ thống đã trải qua quy trình kiểm thử tự động toàn diện b
 - Source code Backend RAG: [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts)
 - Source code Chatbot Controller: [`backend/src/utils/chatbot.ts`](file:///d:/Coffee/backend/src/utils/chatbot.ts)
 - Giao diện Client Chatbot: [`frontend/src/components/CoffeeChatbot.tsx`](file:///d:/Coffee/frontend/src/components/CoffeeChatbot.tsx)
-- Tài liệu tri thức gốc: [`docs/MOC_Coffee_Chatbot_Knowledge_Base.docx`](file:///d:/Coffee/docs/MOC_Coffee_Chatbot_Knowledge_Base.docx)
+- Tài liệu tri thức gốc: các mục kiến thức được quản lý trong [`backend/src/utils/rag.ts`](file:///d:/Coffee/backend/src/utils/rag.ts).

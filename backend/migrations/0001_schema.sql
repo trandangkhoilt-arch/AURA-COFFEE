@@ -1,5 +1,5 @@
 -- ============================================================================
--- MỘC COFFEE — CLOUDFLARE D1 DATABASE SCHEMA (SQLite)
+-- AURA COFFEE — CLOUDFLARE D1 DATABASE SCHEMA (SQLite)
 -- Migration: 0001_schema.sql
 -- ============================================================================
 

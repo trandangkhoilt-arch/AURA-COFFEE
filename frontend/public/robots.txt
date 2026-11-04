@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/v1/admin
 
-Sitemap: https://moc-coffee.workers.dev/sitemap.xml
+Sitemap: https://aura-coffee-4tv.pages.dev/sitemap.xml

@@ -31,7 +31,7 @@ export interface KnowledgeChunk {
 
 // ----------------------------------------------------------------------------
 // 1. KHO DỮ LIỆU TRI THỨC GỐC (KNOWLEDGE BASE SECTIONS)
-// Đồng bộ 100% với tài liệu MOC_Coffee_Chatbot_Knowledge_Base.docx / .pdf
+// Curated knowledge base for the AURA COFFEE chatbot.
 // ----------------------------------------------------------------------------
 export const STATIC_KNOWLEDGE_DOCUMENTS: RawDocumentSection[] = [
   {
@@ -81,7 +81,7 @@ export const STATIC_KNOWLEDGE_DOCUMENTS: RawDocumentSection[] = [
     text: `Chính sách đổi trả, hoàn tiền và bảo mật tại AURA COFFEE:
 - Đổi trả trong 7 ngày: Đổi mới 100% miễn phí vận chuyển nếu sản phẩm bị rách bao bì, hở van 1 chiều hoặc giao sai loại hạt, sai khối lượng, sai cỡ xay. Vui lòng sử dụng trang Liên hệ kèm mã đơn (MOC-...) và ảnh thực tế.
 - Hủy đơn hàng: Khách tự hủy trực tuyến tại mục "Tài khoản -> Đơn hàng của tôi" khi đơn ở trạng thái "Chờ xác nhận" (pending), hệ thống tự động hoàn kho ngay lập tức.
-- Bảo mật thông tin: Dữ liệu lưu trữ an toàn trên Cloudflare D1, số điện thoại được che bảo mật (090****567) khi tra cứu công khai, tuyệt đối không chia sẻ cho bên thứ ba ngoài đơn vị vận chuyển.`,
+- Bảo mật thông tin: Số điện thoại được che một phần khi tra cứu đơn hàng công khai.`,
   },
   {
     docId: 'kb-brewing-phin',

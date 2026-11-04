@@ -37,7 +37,7 @@ Website thương mại điện tử cà phê đặc sản Việt Nam hoàn chỉ
 - **Backend**: HonoJS v4 trên Cloudflare Workers Runtime (`/api/v1/*`).
 - **Database**: Cloudflare D1 (SQLite) — 15 bảng dữ liệu.
 - **Media & Asset Storage**: Cloudflare Workers KV (`KV` binding) phân tán toàn cầu tại Edge.
-- **Vector Database**: Cloudflare Vectorize (`VECTORIZE` binding) index `moc-coffee-vectors` (1024 dimensions, metric cosine) phục vụ RAG AI Barista Chatbot.
+- **Vector Database**: Cloudflare Vectorize (`VECTORIZE` binding) index `moc-coffee-vector-index` (1024 dimensions, metric cosine) phục vụ RAG AI Barista Chatbot.
 - **Workers AI**: Trực tiếp chạy mô hình nhúng `@cf/baai/bge-m3` và mô hình ngôn ngữ lớn `@cf/meta/llama-3.3-70b-instruct-fp8-fast`.
 - **Testing**: Vitest + Node SQLite (`node:sqlite`) kiểm thử tích hợp toàn bộ luồng API, D1, Workers KV, Auth và Tồn kho.
 
@@ -109,8 +109,8 @@ moc-coffee/
 
 4. **Thông tin đăng nhập Admin tại môi trường Local Development:**
    - Đường dẫn: `/admin/login`
-   - Email mặc định (chỉ khởi tạo ở chế độ `development` khi chưa cấu hình biến môi trường): `admin@moccoffee.vn`
-   - Mật khẩu mặc định tại local dev: `MocCoffee@2026`
+   - Email mặc định (chỉ khởi tạo ở chế độ `development` khi chưa cấu hình biến môi trường): `admin@auracoffee.local`
+   - Mật khẩu mặc định tại local dev: `AuraCoffeeLocal@2026`
    *(Trong môi trường Production, tài khoản Admin được khởi tạo thông qua `wrangler secret put ADMIN_BOOTSTRAP_EMAIL` và `ADMIN_BOOTSTRAP_PASSWORD`).*
 
 ---

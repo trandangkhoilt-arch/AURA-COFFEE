@@ -308,7 +308,7 @@ const mem: MemoryStore = {
   banners: [
     {
       id: 1,
-      title: 'Hương Vị Việt. Đánh Thức Đam Mê.',
+      title: 'Đậm vị nguyên bản – Trọn từng khoảnh khắc.',
       subtitle:
         'Từ những vùng nguyên liệu trù phú đến tách cà phê mỗi sáng — chọn hương vị dành riêng cho bạn.',
       eyebrow: 'GOOD COFFEE, BETTER DAYS',
@@ -522,36 +522,36 @@ async function ensureMemAdmin() {
     await syncFromEdgeCache();
   }
   if (mem.users.length === 0) {
-    const { hash, salt } = await hashPassword('MocCoffee@2026');
+    const { hash, salt } = await hashPassword('AuraCoffeeLocal@2026');
     mem.users.push(
       {
         id: 1,
-        email: 'admin@moccoffee.vn',
-        phone: '0909888999',
+        email: 'admin@auracoffee.local',
+        phone: '',
         full_name: 'Quản trị viên AURA COFFEE',
         password_hash: hash,
         password_salt: salt,
         role: 'admin',
         province: 'TP. Hồ Chí Minh',
-        district: 'Quận 1',
-        ward: 'Phường Bến Nghé',
-        shipping_address: 'Số 86 Nguyễn Huệ',
+        district: '',
+        ward: '',
+        shipping_address: '',
         is_active: 1,
         created_at: '2026-10-19 08:00:00',
         updated_at: '2026-10-19 08:00:00',
       },
       {
         id: 2,
-        email: 'khachhang@moccoffee.vn',
-        phone: '0901234567',
-        full_name: 'Nguyễn Minh Anh',
+        email: 'customer@auracoffee.local',
+        phone: '',
+        full_name: 'Khách hàng thử nghiệm',
         password_hash: hash,
         password_salt: salt,
         role: 'customer',
         province: 'TP. Hồ Chí Minh',
-        district: 'Quận 3',
-        ward: 'Phường Võ Thị Sáu',
-        shipping_address: 'Số 128 Điện Biên Phủ',
+        district: '',
+        ward: '',
+        shipping_address: '',
         is_active: 1,
         created_at: '2026-10-19 08:00:00',
         updated_at: '2026-10-19 08:00:00',

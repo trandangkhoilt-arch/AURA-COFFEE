@@ -57,6 +57,10 @@ Mở tệp `wrangler.jsonc` và Thay `database_id` trong cấu hình bằng ID v
 ```bash
 # Tạo Vectorize Index 1024 chiều cho AI
 npx wrangler vectorize create moc-coffee-vector-index --dimensions=1024 --metric=cosine
+
+# Khởi động ứng dụng trong một terminal khác trước khi re-index
+npm run dev
+# Terminal hiện tại: gọi API re-index bằng BGE-M3 và dữ liệu sản phẩm trong D1
 npm run seed:vectorize
 
 # Tạo KV Namespace cho Media Assets
@@ -119,7 +123,7 @@ Trang web sẽ có URL dạng `https://aura-coffee-<suffix>.pages.dev`.
 ### Bước 15: Cấu hình Custom Domain và HTTPS
 1. Truy cập **Cloudflare Dashboard** → **Workers & Pages** → chọn Pages project `aura-coffee`.
 2. Vào mục **Custom domains** và thêm tên miền của bạn.
-3. Nhập tên miền của bạn (ví dụ: `moccoffee.vn` hoặc `shop.moccoffee.vn`). Cloudflare sẽ tự động cấp chứng chỉ SSL/TLS (HTTPS).
+3. Nhập tên miền riêng mà bạn sở hữu. Cloudflare sẽ tự động cấp chứng chỉ SSL/TLS (HTTPS).
 
 ### Bước 16: Kiểm tra API trên Production
 Mở trình duyệt hoặc chạy `curl`:

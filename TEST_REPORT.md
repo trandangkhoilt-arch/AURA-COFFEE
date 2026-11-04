@@ -1,4 +1,4 @@
-# Báo cáo kiểm thử MỘC Coffee
+# Báo cáo kiểm thử AURA COFFEE
 
 **Ngày:** 20/10/2026  
 **Môi trường:** Windows, Chrome, local Vite dev server  
